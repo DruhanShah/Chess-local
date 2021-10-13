@@ -19,18 +19,12 @@ void initialize()
     symbToNum['r'] = 5;
     symbToNum['q'] = 6;
     numToSymb[0] = ' ';
-    numToSymb[9] = 'k';
-    numToSymb[10] = 'p';
-    numToSymb[11] = 'n';
-    numToSymb[12] = 'b';
-    numToSymb[13] = 'r';
-    numToSymb[14] = 'q';
-    numToSymb[1] = 'K';
-    numToSymb[2] = 'P';
-    numToSymb[3] = 'N';
-    numToSymb[4] = 'B';
-    numToSymb[5] = 'R';
-    numToSymb[6] = 'Q';
+    numToSymb[1] = 'k';
+    numToSymb[2] = 'p';
+    numToSymb[3] = 'n';
+    numToSymb[4] = 'b';
+    numToSymb[5] = 'r';
+    numToSymb[6] = 'q';
 }
 
 void FENtoBoard(string s,char movechar)
@@ -50,8 +44,8 @@ void FENtoBoard(string s,char movechar)
         else
         {
             int pieceColour = isupper(s[i]) ? 0 : 8;
-            int pieceType = symbToNum[(char)tolower(s[i])];
-            board[(rank*8)+file] = (pieceType | pieceColour);
+            int pieceType = symbToNum[tolower(s[i])];
+            board[(rank*8)+file] = (pieceType + pieceColour);
             file++;
         }
     }
@@ -64,7 +58,11 @@ void printBoard()
     {
         for(int ii=0; ii<8; ii++)
         {
-            cout << "["<<numToSymb[board[(i*8)+ii]]<<"]";
+            int curr = board[(i*8)+ii];
+            char currChar = numToSymb[curr%8];
+            if((curr&8)==0)
+                currChar = toupper(currChar);
+            cout << "["<<currChar<<"]";
         }
         cout << "\n";
     }
