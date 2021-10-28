@@ -183,13 +183,11 @@ function presentBoard() {
             cell.removeChild(cell.firstElementChild)
         }
         
-        if(boardContent[i] != 0) {
-            var img = document.createElement('img')
-            img.setAttribute('src', pieceImgList[boardContent[i]])
-            img.style.width='100%'
-            img.style.height='100%'
-            cell.appendChild(img)
-        }
+        var img = document.createElement('img')
+        img.setAttribute('src', pieceImgList[boardContent[i]])
+        img.style.width='100%'
+        img.style.height='100%'
+        cell.appendChild(img)
     }
 	if(pickedUpSquare!==null) {
 		if(pickedUp) {
@@ -235,23 +233,18 @@ function verifyMoveColor(pickedColor) {
 function selectSquare(e) {
     var selectedSquare
 	if(e.target.tagName=='IMG') {
-		console.log(e.target.parentElement)
 		selectedSquare = e.target.parentElement
 	}
 	else if(e.target.tagName=='TD'){
-		console.log(e.target)
 		selectedSquare = e.target
 	}
 	else {
-		alert("Please select a square.")
-		console.log(e.target.tagName)
 		return null;
 	}
 	var squareId = Number(selectedSquare.getAttribute('id'))
     if(!pickedUp) {
 		if(boardContent[squareId]==0) {
 			alert("Please choose a piece of the appropriate color")
-			console.log(pickedUp)
 			return null;
 		}
         if(verifyMoveColor(boardContent[squareId] & 8)) {
@@ -266,7 +259,6 @@ function selectSquare(e) {
 		presentBoard()
 		pickedUpSquare = null
 	}
-	console.log(pickedUp)
 }
 
 
