@@ -1,9 +1,14 @@
-# FEN-to-Chessboard
-A program that accepts FEN strings as input and outputs a chessboard onto console
+# Sample Chess Programs
+A chessboard program that allows entering moves and moving by clicking  
+Also a program that accepts FEN strings as input and outputs a chessboard onto console  
 
-The code is in C++ and uses ```stdin``` because of the lack of GUI, so the FEN is input as multiple strings instead of a single string with spaces.  
+##FEN-to-Chessboard (C++)
+The code in C++ uses ```stdin``` because of the lack of GUI, so the FEN is input as multiple strings instead of a single string with spaces.  
 Also, the conversion of character to number for the pieces is not very efficient as it is intended to allow upgrade to a system where the chessboard can be actually printed in a GUI instead of just console.  
-At the moment, the FEN input can only process the first two sections in a standard FEN. Processing for the later sections is a WIP :sweat_smile:  
+At the moment, the FEN input can only process the first two sections in a standard FEN. Processing for the later sections is a WIP :sweat_smile:
+
+##Chess Board (JavaScript)
+The webpage uses JavaScript DOM manipulation every time a move is made. Drag-and-drop moving is not implemented yet, and neither are the rules of piece movement. ```1. Kxe8 1-0``` is a perfectly valid move at the moment. These two issues are WIPs too.
 
 ### What is FEN?
 Forsyth-Edwards Notation is a method of representing a board position with some extra information in a single string.  
