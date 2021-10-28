@@ -34,18 +34,6 @@ function colorSwitch() {
         
         document.getElementById('topnavbar').style.backgroundColor='#161515'
         document.getElementById('topnavbar').style.color='#c7c4c4'
-
-        document.getElementById('from').style.backgroundColor='#3f3f3f'
-        document.getElementById('from').style.color='#ffe3c4'
-        document.getElementById('from').style.borderColor='#ffe3c4'
-
-        document.getElementById('to').style.backgroundColor='#3f3f3f'
-        document.getElementById('to').style.color='#ffe3c4'
-        document.getElementById('to').style.borderColor='#ffe3c4'
-
-        document.getElementById('makeMove').style.backgroundColor='#3f3f3f'
-        document.getElementById('makeMove').style.color='#ffe3c4'
-        document.getElementById('makeMove').style.borderColor='#ffe3c4'
         
         document.getElementById('darkmodeButton').style.backgroundColor='#3f3f3f'
         document.getElementById('darkmodeButton').style.color='#ffe3c4'
@@ -59,18 +47,6 @@ function colorSwitch() {
         
         document.getElementById('topnavbar').style.backgroundColor='#b8b8b8'
         document.getElementById('topnavbar').style.color='#272424'
-
-        document.getElementById('from').style.backgroundColor='#ffe3c4'
-        document.getElementById('from').style.color='#3f3f3f'
-        document.getElementById('from').style.borderColor='#3f3f3f'
-
-        document.getElementById('to').style.backgroundColor='#ffe3c4'
-        document.getElementById('to').style.color='#3f3f3f'
-        document.getElementById('to').style.borderColor='#3f3f3f'
-        
-        document.getElementById('makeMove').style.backgroundColor='#ffe3c4'
-        document.getElementById('makeMove').style.color='#3f3f3f'
-        document.getElementById('makeMove').style.borderColor='#3f3f3f'
 
         document.getElementById('darkmodeButton').style.backgroundColor='#b8b8b8'
         document.getElementById('darkmodeButton').style.color='#3f3f3f'
@@ -263,14 +239,3 @@ function selectSquare(e) {
 
 
 document.getElementById('ChessBoard').addEventListener('click', selectSquare)
-document.getElementById('makeMove').addEventListener('click', function() {
-	var source = document.getElementById('from').value
-	var sink = document.getElementById('to').value
-	if(source.length==2 && sink.length==2) {
-		move(squareToBoardContent(source), squareToBoardContent(sink))
-		presentBoard()
-	}
-	else {
-		alert("Please enter valid square. Check if the entry has any extra whitespace")
-	}
-})
