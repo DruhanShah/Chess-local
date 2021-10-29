@@ -2,6 +2,7 @@
     <head>
         
         <title>Sample Chess Program</title>
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
         <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
         <style>
             a {
@@ -14,13 +15,6 @@
                 align-content: center;
             }
 
-            input {
-                color: #ffffff;
-                background-color: #252525;
-                border-radius: 20px;
-                border-width: 1px;
-                border-color: #ffe3c4;
-            }
             button {
                 color: #ffe3c4;
                 background-color: #3f3f3f;
@@ -44,9 +38,10 @@
         <table>
         <tr>
             <td id='HowTo' style='width:35vw'>
-                <div id='HowToText' style='font-family:Arial; color:#ffffff; border:1px solid #e7e4e4; border-radius:5vmin; height:65vmin; text-align:justify; padding:5vmin; margin-right: 10vmin; margin-left:10vmin;'><p>
+                <div id='HowToText' style='font-family:Arial; font-size: 2.5vmin; background-color:#161515; color:#ffffff; border:1px solid #e7e4e4; border-radius:5vmin; height:65vmin; text-align:justify; padding:5vmin; margin-right: 4vmin; margin-left:4vmin;'><p>
+                <h3>How to move</h3>
                 In order to move a piece on the board, click on the piece you want to move and then click on the square you want to move it to. When selected, the square of the piece will be colored light blue. The circle on the bottom-right corner of the chessboard will indicate whose move it is. <br><br>
-                Drag-and-drop functionality is going to be added later. (Too complicated. Haven't reached that level of proficiency, yet :P)
+                Drag-and-drop functionality is going to be added later.
                 </p></div>
             </td>
             <td id='playingArea'>
