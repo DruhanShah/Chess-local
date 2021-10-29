@@ -7,8 +7,9 @@ The code in C++ uses ```stdin``` because of the lack of GUI, so the FEN is input
 Also, the conversion of character to number for the pieces is not very efficient as it is intended to allow upgrade to a system where the chessboard can be actually printed in a GUI instead of just console.  
 At the moment, the FEN input can only process the first two sections in a standard FEN. Processing for the later sections is a WIP :sweat_smile:
 
-## Chess Board (JavaScript)
-The webpage uses JavaScript DOM manipulation every time a move is made. Drag-and-drop moving is not implemented yet, and neither are the rules of piece movement. ```1. Kxe8 1-0``` is a perfectly valid move at the moment. These two issues are WIPs too.
+## Chess-Board (JavaScript)
+A standard chessboard display that can move pieces with clicks. Drag-and-drop implementation is a WIP.  
+For the rules, the movement patterns of the pieces have been added, but checks, pins, castling, _en passant_ and promotion are WIPs too.  
 
 ### What is FEN?
 Forsyth-Edwards Notation is a method of representing a board position with some extra information in a single string.  
