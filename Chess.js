@@ -1,25 +1,42 @@
 var darkMode = true
 var darkSign = 'img/dark.svg'
 var lightSign = 'img/light.svg'
+var blackCaptured = []
+var whiteCaptured = []
+
+function checkSize() {
+    if($(window).height()/$(window).width()<0.9) {
+        $('.wideScreen').attr('hidden', false)
+        $('.longScreen').attr('hidden', true)
+    }
+    else if($(window).height()/$(window).width()>0.9) {
+        $('.longScreen').removeAttr('hidden', false)
+        $('.wideScreen').attr('hidden', true)
+    }
+}
+
+$(window).resize(checkSize)
+$(checkSize())
 
 /* The dummy elements are so that all the black pieces will have i & 8 == 8
-And all the white pieces will have i & 8 == 0 */
+And all the white pieces will have i & 8 == 0 
+The .svg extension is removed so that we can use the same list for the captured piece images*/
 var pieceImgList = [
-    'img/blank.svg',
-    'img/white_pawn.svg',
-    'img/white_knight.svg',
-    'img/white_bishop.svg',
-    'img/white_rook.svg',
-    'img/white_queen.svg',
-    'img/white_king.svg',
+    'img/blank',
+    'img/white_pawn',
+    'img/white_knight',
+    'img/white_bishop',
+    'img/white_rook',
+    'img/white_queen',
+    'img/white_king',
     'DUMMY',
     'DUMMY',
-    'img/black_pawn.svg',
-    'img/black_knight.svg',
-    'img/black_bishop.svg',
-    'img/black_rook.svg',
-    'img/black_queen.svg',
-    'img/black_king.svg'
+    'img/black_pawn',
+    'img/black_knight',
+    'img/black_bishop',
+    'img/black_rook',
+    'img/black_queen',
+    'img/black_king'
 ]
 var boardContent = []
 
@@ -30,6 +47,8 @@ function colorSwitch() {
         $('#topnavbar').css('background-color', '#161515').css('color', '#c7c4c4')
         $('#darkmodeButton').css('background-color', '#3f3f3f').css('color', '#ffe3c4').css('border-color', '#ffe3c4')
         $('#HowToText').css('color', '#ffffff').css('border', '1px solid #e7e4e4').css('background-color', '#161515')
+        $('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#161515').css('border', '1px solid #e7e4e4')
+        $('#PlayerTextWide').css('color', '#ffffff').css('background-color', '#161515').css('border', '1px solid #e7e4e4')
         $('#darkmodeicon').attr('src', lightSign)
     }
     else {
@@ -37,6 +56,8 @@ function colorSwitch() {
         $('#topnavbar').css('background-color', '#b8b8b8').css('color', '#272424')
         $('#darkmodeButton').css('background-color', '#b8b8b8').css('color', '#3f3f3f').css('border-color', '#3f3f3f')
         $('#HowToText').css('color', '#272424').css('border', '1px solid #272424').css('background-color', '#b8b8b8')
+        $('#PlayerTextLong').css('color', '#161515').css('background-color', '#b8b8b8').css('border', '1px solid #161515')
+        $('#PlayerTextWide').css('color', '#161515').css('background-color', '#b8b8b8').css('border', '1px solid #161515')
         $('#darkmodeicon').attr('src', darkSign)
     }
 }
@@ -316,6 +337,22 @@ class Square {
     }
 }
 
+var plyNumber = 1
+var moveList = []
+
+class Move {
+    constructor(from, to) {
+        this.fromSquare = from.id
+        this.fromPiece = from.pieceId
+        this.fromColor = from.color
+        this.toSquare = to.id
+        this.toPiece = to.pieceId
+        this.toColor = to.color
+        this.number = plyNumber
+    }
+}
+
+
 for(var i=0; i<64; i++) {
     boardContent.push(new Square(i, 0))
 }
@@ -381,7 +418,6 @@ function buildBoard() {
     board.append(blankrow)
 
     startingPosition()
-    presentBoard()
 }
 
 function startingPosition() {
@@ -397,6 +433,9 @@ function startingPosition() {
         boardContent[8+i].changePiece(9)
         boardContent[48+i].changePiece(1)
     }
+    for(var i=16; i<48; i++) {
+        boardContent[i].changePiece(0)
+    }
     boardContent[56].changePiece(4)
     boardContent[57].changePiece(2)
     boardContent[58].changePiece(3)
@@ -405,6 +444,10 @@ function startingPosition() {
     boardContent[61].changePiece(3)
     boardContent[62].changePiece(2)
     boardContent[63].changePiece(4)
+
+    whiteCaptured = []
+    blackCaptured = []
+    presentBoard()
 }
 
 function presentBoard() {
@@ -412,24 +455,73 @@ function presentBoard() {
         var cell = $('#'+String(i))
         cell.empty()
         
-        var img = $('<img src='+pieceImgList[boardContent[i].pieceId]+'></img>')
+        var img = $('<img src='+pieceImgList[boardContent[i].pieceId]+'.svg></img>')
         img.width('100%').height('100%')
         cell.append(img)
     }
-	if(pickedUpSquare!==null) {
-		if(pickedUp) {
-			$('#'+String(pickedUpSquare)).css('background-color', '#349fd9')
+    document.getElementById('moveIndicator').style.backgroundColor = moveColor==8 ? '#000000' : '#ffffff'
+	
+    for(var i=0; i<64; i++) {
+        $('#'+i).css('background-color', (boardContent[i].rank+boardContent[i].file)%2==1 ? '#694232' : '#ffd993').css('border', '0px')
+    }
+
+    
+    if(moveList.length!=0) {
+        var lastMove = moveList[moveList.length-1]
+        var lastFrom = boardContent[lastMove.fromSquare]
+        var lastTo = boardContent[lastMove.toSquare]
+        $('#'+String(lastMove.fromSquare)).css('background-color', (lastFrom.rank+lastFrom.file)%2==1 ? '#3b633c' : '#7bc77e' )
+        $('#'+String(lastMove.toSquare)).css('background-color', (lastTo.rank+lastTo.file)%2==1 ? '#3b633c' : '#7bc77e' )
+    }
+
+    if(pickedUpSquare!==null) {
+        if(pickedUp) {
+            $('#'+String(pickedUpSquare)).css('background-color', '#2f3340')
             for(var i=0; i<boardContent[pickedUpSquare].legalTarget.length; i++) {
                 var temp = boardContent[pickedUpSquare].legalTarget[i]
-                $('#'+String(temp)).css('background-color', (boardContent[temp].rank+boardContent[temp].file)%2==1 ? '#54916e': '#97e6b9')
+                $('#'+String(temp)).css('border', '2px solid #4f788f')
             }
-		}
-		else {
-            for(var i=0; i<64; i++) {
-                $('#'+i).css('background-color', (boardContent[i].rank+boardContent[i].file)%2==1 ? '#694232' : '#ffd993')
-            }
-		}
-	}
+        }
+    }
+
+    if(whiteCaptured.length==0) {
+        var capPiece = $('<td>')
+        var capImg = $('<img src=img/blank.svg>')
+        capImg.height('1.5em')
+        capPiece.append(capImg)
+        $('tr#whiteCapturedList').empty().append(capPiece)
+    }
+    else{
+        whiteCaptured.sort(function(a,b){return (b-a)})
+        $('tr#whiteCapturedList').empty()
+        for(var i=0; i<whiteCaptured.length; i++) {
+            var capPiece = $('<td>')
+            var capImg = $('<img src='+pieceImgList[whiteCaptured[i]]+'_cap.svg>')
+            capPiece.css('padding', '0px').css('margin', '0px')
+            capImg.height('1.5em').width('fit-content')
+            capPiece.append(capImg)
+            $('tr#whiteCapturedList').append(capPiece)
+        }
+    }
+    if(blackCaptured.length==0) {
+        var capPiece = $('<td>')
+        var capImg = $('<img src=img/blank.svg>')
+        capImg.height('1.5em')
+        capPiece.append(capImg)
+        $('tr#blackCapturedList').empty().append(capPiece)
+    }
+    else {
+        blackCaptured.sort(function(a,b){return (b-a)})
+        $('tr#blackCapturedList').empty()
+        for(var i=0; i<blackCaptured.length; i++) {
+            var capPiece = $('<td>')
+            var capImg = $('<img src='+pieceImgList[blackCaptured[i]]+'_cap.svg>')
+            capPiece.css('padding', '0px').css('margin', '0px')
+            capImg.height('1.5em').width('fit-content')
+            capPiece.append(capImg)
+            $('tr#blackCapturedList').append(capPiece)
+        }
+    }
 }
 
 buildBoard()
@@ -437,11 +529,19 @@ buildBoard()
 function move(from, to) {
     if(verifyMove(from,to)) {
         var movedPiece = from.pieceId
+        if(to.pieceId!=0) {
+            if(from.color==0)
+            whiteCaptured.push(to.pieceId)
+            else
+            blackCaptured.push(to.pieceId)
+        }
+        var newMove = new Move(from, to)
+        moveList.push(newMove)
         from.changePiece(0)
         to.changePiece(movedPiece)
+        plyNumber++
 		moveColor = moveColor ^ 8
     }
-	document.getElementById('moveIndicator').style.backgroundColor = moveColor==8 ? '#000000' : '#ffffff'
 }
 
 
@@ -493,4 +593,36 @@ function selectSquare(e) {
 	}
 }
 
+function Undo() {
+    if(moveList.length==0) {
+        return null
+    }
+    var lastMove = moveList[moveList.length-1]
+    
+    if(lastMove.toColor===0) {
+        for(var i=0; i<blackCaptured.length; i++) {
+            if(blackCaptured[i]==lastMove.toPiece) {
+                blackCaptured.splice(i,1)
+                break
+            }
+        }
+    }
+    else if(lastMove.toColor===8) {
+        for(var i=0; i<whiteCaptured.length; i++) {
+            if(whiteCaptured[i]==lastMove.toPiece) {
+                whiteCaptured.splice(i,1)
+                break
+            }
+        }
+    }
+    boardContent[lastMove.fromSquare].changePiece(lastMove.fromPiece)
+    boardContent[lastMove.toSquare].changePiece(lastMove.toPiece)
+    
+    moveList.splice(moveList.length-1, 1)
+    moveColor = moveColor ^ 8
+    plyNumber--
+    presentBoard()
+}
+
+document.getElementById('undo').addEventListener('click', Undo)
 document.getElementById('ChessBoard').addEventListener('click', selectSquare)

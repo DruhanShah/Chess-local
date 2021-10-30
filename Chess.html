@@ -37,17 +37,57 @@
         </div>
         <table>
         <tr>
-            <td id='HowTo' style='width:35vw'>
-                <div id='HowToText' style='font-family:Arial; font-size: 2.5vmin; background-color:#161515; color:#ffffff; border:1px solid #e7e4e4; border-radius:5vmin; height:65vmin; text-align:justify; padding:5vmin; margin-right: 4vmin; margin-left:4vmin;'><p>
-                <h3>How to move</h3>
-                In order to move a piece on the board, click on the piece you want to move and then click on the square you want to move it to. When selected, the square of the piece will be colored light blue. The circle on the bottom-right corner of the chessboard will indicate whose move it is. <br><br>
-                Drag-and-drop functionality is going to be added later.
-                </p></div>
+            <td id='Players' class='wideScreen' style='width:35vw'>
+                <div id='PlayerTextWide' style='font-family:Arial; font-size: 2.5vmin; background-color:#4b4a4a; color:#ffffff; border:1px solid #e7e4e4; border-radius:5vmin; height:fit-content; text-align:justify; padding:5vmin; margin-right: 4vmin; margin-left:4vmin;'>
+                    <div id='White'>
+                        <div id='player0'>
+                            <img src='img/white_king.svg' style='width:2em; height:2em'> White
+                        </div>
+                        <div id='whiteCaptured'>
+                            <table><tr id='whiteCapturedList'>
+                            </tr></table>
+                        </div>
+                    </div>
+                    <div id='Black' style='margin-top:20vh'>
+                        <div id='player8'>
+                            <img src='img/black_king.svg' style='width:2em; height:2em'> Black
+                        </div>
+                        <div id='blackCaptured'>
+                            <table style='padding:0px; margin-bottom:10px;'><tr id='blackCapturedList'>
+                            </tr></table>
+                        </div>
+                    </div>
+                </div>
             </td>
             <td id='playingArea'>
                 <div id='boardArea' style='margin-left:auto; margin-right:auto; width:75vmin; height:75vmin; background-image:url("img/wood1.jpg"); padding:0px'>
                     <table id='ChessBoard' style='width:100%; height:100%; margin:0px; border-width:0px;'>
                     </table>
+                    <button id='undo' style='margin-left:auto; margin-right:auto'>Undo last ply</button>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td id='Players' class='longScreen' style='height:5vh' hidden colspan=2>
+                <div id='PlayerTextLong' style='font-family:Arial; font-size: 2.5vmin; background-color:#161515; color:#ffffff; border:1px solid #e7e4e4; border-radius:5vmin; height:10vmin; text-align:justify; padding:5vmin; margin-right: 4vmin; margin-left:4vmin;'>
+                    <div id='White' style='float:left'>
+                        <div id='player0'>
+                            <img src='img/white_king.svg' style='width:2em; height:2em'> White
+                        </div>
+                        <div id='whiteCaptured'>
+                            <table><tr id='whiteCapturedList'>
+                            </tr></table>
+                        </div>
+                    </div>
+                    <div id='Black' style='float:right'>
+                        <div id='player8'>
+                            <img src='img/black_king.svg' style='width:2em; height:2em'> Black
+                        </div>
+                        <div id='blackCaptured'>
+                            <table style='padding:0px; margin-bottom:10px;'><tr id='blackCapturedList'>
+                            </tr></table>
+                        </div>
+                    </div>
                 </div>
             </td>
         </tr>
