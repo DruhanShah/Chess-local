@@ -22,11 +22,13 @@
                 border-width: 1px;
                 border-color: #ffe3c4;
             }
+
         </style>
-        <link rel='icon' href='https://static.thenounproject.com/png/108491-200.png'>
+        <link rel='icon' href='img/white_knight.svg'>
 
     </head>
     <body style='background-color:#252525; margin:0; color:#e7e4e4; font-family:Roboto'>
+    <div id='NotModal' style='position:absolute; z-index:1; width:100%'>
         <div id='topnavbar' style='margin:0px; margin-bottom: 3vmin; width:100%; height:11vh; background-color:#161515; color:#c7c4c4'>
             <div id='pagetitle' style='margin-top: 3vh; margin-left:10px; float:left; width:fit-content; height:fit-content; font-family:Roboto; font-size:4vh; text-align:center;'>
                 Not lichess.org
@@ -36,6 +38,9 @@
             </div>
         </div>
         <table>
+        <tr>
+            <td id='Result'></td>
+        </tr>
         <tr>
             <td id='Players' class='wideScreen' style='width:35vw'>
                 <div id='PlayerTextWide' style='font-family:Arial; font-size: 2.5vmin; background-color:#4b4a4a; color:#ffffff; border:1px solid #e7e4e4; border-radius:5vmin; height:fit-content; text-align:justify; padding:5vmin; margin-right: 4vmin; margin-left:4vmin;'>
@@ -62,8 +67,9 @@
             <td id='playingArea'>
                 <div id='boardArea' style='margin-left:auto; margin-right:auto; width:75vmin; height:75vmin; background-image:url("img/wood1.jpg"); padding:0px'>
                     <table id='ChessBoard' style='width:100%; height:100%; margin:0px; border-width:0px;'>
-                    </table>
-                    <button id='undo' style='margin-left:auto; margin-right:auto'>Undo last ply</button>
+                    </table><br>
+                    <button id='undo' style='margin-left:auto; margin-right:auto; padding:0.5vmin'>Undo last ply</button>
+                    <button id='ShowResult' style='margin-left:auto; margin-right:auto; display:none; padding:0.5vmin'>Result</button>
                 </div>
             </td>
         </tr>
@@ -92,6 +98,16 @@
             </td>
         </tr>
         </table>
-        <script src='Chess.js'></script>
+        <!--<div><h2>Debug Tools</h2> <button id='Checkmate'>Induce Checkmate</button> <br> <button id='Stalemate'> Induce Stalemate</button></div>-->
+    </div>
+    <div id='ModalBox' style='width:100%; height:100%; position:absolute; z-index:9999; display:none; background-color:rgba(0,0,0,0.6)'>
+    <div id='ResultModal' style='vertical-align:middle;text-align:center; background-color:#161515; color:#c7c4c4; padding: 3vmin; border: 1px solid grey; border-radius: 3vmin; position:absolute; top:25vh; left:40vw; width:fit-content; height:fit-content'>
+        <div id='ResultType'></div>
+        <div id='ResultDesc'></div>
+        <button id='newGameButton' style='width:fit-content; height:5vh; margin-bottom:1vmin; margin-top:5vmin'>New Game</button><br>
+        <button id='seeBoardButton' style='width:fit-content; height:5vh; margin-bottom:5vmin; margin-top:1vmin'>Show Board</button>
+    </div>
+    </div>
+    <script src='Chess.js'></script>
     </body>
 </html>

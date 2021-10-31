@@ -101,31 +101,31 @@ class Square {
 
     checkPawn() {
         if(this.color===0) {
-            if(boardContent[this.id-8].pieceType===null) {
+            if(boardContent[this.id-8].pieceId==0) {
                 this.legalTarget.push(this.id-8)
-                if(this.rank==2)
+                if(this.rank==2 && boardContent[this.id-16].pieceId==0)
                     this.legalTarget.push(this.id-16)
             }
-            if(boardContent[this.id-7].color===8) {
+            if(boardContent[this.id-7].color===8 && this.file !=7) {
                 this.legalTarget.push(this.id-7)
                 this.attackTarget.push(this.id-7)
             }
-            if(boardContent[this.id-9].color===8) {
+            if(boardContent[this.id-9].color===8 && this.file !=0) {
                 this.legalTarget.push(this.id-9)
                 this.attackTarget.push(this.id-9)
             }
         }
-        else {
-            if(boardContent[this.id+8].pieceType===null) {
+        else if(this.color===8){
+            if(boardContent[this.id+8].pieceId==0) {
                 this.legalTarget.push(this.id+8)
-                if(this.rank==7)
+                if(this.rank==7 && boardContent[this.id+16].pieceId==0)
                     this.legalTarget.push(this.id+16)
             }
-            if(boardContent[this.id+7].color===0) {
+            if(boardContent[this.id+7].color===0 && this.file!=0) {
                 this.legalTarget.push(this.id+7)
                 this.attackTarget.push(this.id+7)
             }
-            if(boardContent[this.id+9].color===0) {
+            if(boardContent[this.id+9].color===0 && this.file!=7) {
                 this.legalTarget.push(this.id+9)
                 this.attackTarget.push(this.id+9)
             }
@@ -346,7 +346,7 @@ class Square {
         }
         var selfColor = this.color
         for(var i=0; i<this.legalTarget.length; i++) {
-            moveList.push(new Move(this, boardContent[this.legalTarget[i]]))
+            moveList.push(new Ply(this, boardContent[this.legalTarget[i]]))
             if(boardContent[this.legalTarget[i]].pieceId!=0) {
                 if(boardContent[this.legalTarget[i]].color===0) {
                     blackCaptured.push(boardContent[this.legalTarget[i]].pieceId)
@@ -556,7 +556,7 @@ function checkCheck(color) {
 var plyNumber = 1
 var moveList = []
 
-class Move {
+class Ply {
     constructor(from, to) {
         this.fromSquare = from.id
         this.fromPiece = from.pieceId
@@ -661,6 +661,7 @@ function startingPosition() {
     boardContent[62].changePiece(2)
     boardContent[63].changePiece(4)
 
+    moveList = []
     whiteCaptured = []
     blackCaptured = []
     presentBoard()
@@ -762,38 +763,54 @@ function presentBoard() {
 
 buildBoard()
 
+function GameResult(result) {
+    if(result=='Checkmate') {
+        $('#ResultType').html('<h3>'+ (moveColor==0 ? 'Black' : 'White') +' wins!</h3>')
+        $('#ResultDesc').html('by Checkmate')
+        $('#ModalBox').css('display', 'block')
+    }
+    else if(result=='Stalemate') {
+        $('#ResultType').html('<h3>Draw</h3>')
+        $('#ResultDesc').html('by Stalemate')
+        $('#ModalBox').css('display', 'block')
+    }
+    document.getElementById('undo').removeEventListener('click', UndoButton)
+    document.getElementById('ChessBoard').removeEventListener('click', selectSquare)
+}
+
 function move(from, to) {
-    if(verifyMove(from,to)) {
+    if(from.legalTarget.includes(to.id)) {
         if(to.pieceId!=0) {
             if(from.color==0)
             whiteCaptured.push(to.pieceId)
             else
             blackCaptured.push(to.pieceId)
         }
-        var newMove = new Move(from, to)
+        var newMove = new Ply(from, to)
         moveList.push(newMove)
         to.changePiece(from.pieceId)
         from.changePiece(0)
         plyNumber++
 		moveColor = moveColor ^ 8
+        pickedUp = false
+        pickedUpSquare = null
+        presentBoard()
+
+        var noLegalMoves = true
+        for(var i=0; i<64; i++) {
+            if(boardContent[i].color==moveColor && boardContent[i].legalTarget.length != 0)
+                noLegalMoves = false
+        }
+        if(noLegalMoves && checkCheck(moveColor))
+            GameResult('Checkmate')
+        else if(noLegalMoves && !checkCheck(moveColor))
+            GameResult('Stalemate')
     }
-}
-
-
-function verifyMoveColor(pickedColor) {
-    if(moveColor===pickedColor) {
-		return true
-	}
     else {
-        return false
-	}
-}
-
-function verifyMove(from, to) {
-    if(from.color===to.color) {
-        return false;
+        pickedUp = false
+        pickedUpSquare = null
+        presentBoard()
     }
-    return from.legalTarget.includes(to.id)
 }
 
 function selectSquare(e) {
@@ -809,21 +826,17 @@ function selectSquare(e) {
 	}
 	var squareId = Number(selectedSquare.getAttribute('id'))
     if(!pickedUp) {
-		if(typeof(boardContent[squareId].pieceType)!=='number') {
+		if(boardContent[squareId].pieceId==0) {
 			return null;
 		}
-        if(verifyMoveColor(boardContent[squareId].color)) {
+        if(boardContent[squareId].color===moveColor) {
 			pickedUpSquare = squareId
 			pickedUp = true
 			presentBoard()
         }
     }
-	else {
-		pickedUp = false
+	else
 		move(boardContent[pickedUpSquare], boardContent[squareId])
-		presentBoard()
-		pickedUpSquare = null
-	}
 }
 
 function Undo() {
@@ -862,5 +875,32 @@ function UndoButton() {
     presentBoard()
 }
 
+function newGame() {
+    $('#ModalBox').css('display', 'none')
+    $('#ResultType').html('')
+    $('#ResultDesc').html('')
+    startingPosition()
+    document.getElementById('undo').addEventListener('click', UndoButton)
+    document.getElementById('ChessBoard').addEventListener('click', selectSquare)
+}
+
+
 document.getElementById('undo').addEventListener('click', UndoButton)
 document.getElementById('ChessBoard').addEventListener('click', selectSquare)
+document.getElementById('newGameButton').addEventListener('click', newGame)
+document.getElementById('seeBoardButton').addEventListener('click', function() {
+    $('#undo').css('display', 'none')
+    $('#ShowResult').css('display', 'block')
+    $('#ModalBox').css('display', 'none')
+})
+document.getElementById('ShowResult').addEventListener('click', function() {
+    $('#undo').css('display', 'block')
+    $('#ShowResult').css('display', 'none')
+    $('#ModalBox').css('display', 'block')
+})
+/* document.getElementById('Checkmate').addEventListener('click', function() {
+    GameResult('Checkmate')
+})
+document.getElementById('Stalemate').addEventListener('click', function() {
+    GameResult('Stalemate')
+})*/
