@@ -12,5 +12,5 @@ At the moment, the FEN input can only process the first two sections in a standa
 
 ## Chess-Board (JavaScript)
 A standard chessboard display that can move pieces with clicks. Drag-and-drop implementation is a WIP.  
-For the rules, the movement patterns of the pieces have been added, but checks, pins, castling, _en passant_ and promotion are WIPs too.  
+For the rules, the movement patterns of the pieces and checks have been added and pieces can be pinned to the king, but castling, _en passant_ and promotion are WIPs too. Relative pins don't need to be implemented because they are still legal moves, you'll just lose a queen or so.  
 Added a sidebar that shows the captured pieces for each player. Also, page was made a little responsive to the viewport size  
