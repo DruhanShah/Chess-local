@@ -47,8 +47,8 @@ function colorSwitch() {
         $('#topnavbar').css('background-color', '#161515').css('color', '#c7c4c4')
         $('#darkmodeButton').css('background-color', '#3f3f3f').css('color', '#ffe3c4').css('border-color', '#ffe3c4')
         $('#HowToText').css('color', '#ffffff').css('border', '1px solid #e7e4e4').css('background-color', '#161515')
-        $('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#161515').css('border', '1px solid #e7e4e4')
-        $('#PlayerTextWide').css('color', '#ffffff').css('background-color', '#161515').css('border', '1px solid #e7e4e4')
+        $('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4')
+        $('#PlayerTextWide').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4')
         $('#darkmodeicon').attr('src', lightSign)
     }
     else {
@@ -56,8 +56,8 @@ function colorSwitch() {
         $('#topnavbar').css('background-color', '#b8b8b8').css('color', '#272424')
         $('#darkmodeButton').css('background-color', '#b8b8b8').css('color', '#3f3f3f').css('border-color', '#3f3f3f')
         $('#HowToText').css('color', '#272424').css('border', '1px solid #272424').css('background-color', '#b8b8b8')
-        $('#PlayerTextLong').css('color', '#161515').css('background-color', '#b8b8b8').css('border', '1px solid #161515')
-        $('#PlayerTextWide').css('color', '#161515').css('background-color', '#b8b8b8').css('border', '1px solid #161515')
+        $('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #161515')
+        $('#PlayerTextWide').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #161515')
         $('#darkmodeicon').attr('src', darkSign)
     }
 }
@@ -78,6 +78,7 @@ class Square {
             this.pieceType = this.pieceId%8
         }
         this.legalTarget = []
+        this.attackTarget = []
     }
 
     changePiece(newPiece) {
@@ -95,6 +96,7 @@ class Square {
 
     clearLegalTarget() {
         this.legalTarget = []
+        this.attackTarget = []
     }
 
     checkPawn() {
@@ -104,10 +106,14 @@ class Square {
                 if(this.rank==2)
                     this.legalTarget.push(this.id-16)
             }
-            if(boardContent[this.id-7].color===8)
+            if(boardContent[this.id-7].color===8) {
                 this.legalTarget.push(this.id-7)
-            if(boardContent[this.id-9].color===8)
+                this.attackTarget.push(this.id-7)
+            }
+            if(boardContent[this.id-9].color===8) {
                 this.legalTarget.push(this.id-9)
+                this.attackTarget.push(this.id-9)
+            }
         }
         else {
             if(boardContent[this.id+8].pieceType===null) {
@@ -115,10 +121,14 @@ class Square {
                 if(this.rank==7)
                     this.legalTarget.push(this.id+16)
             }
-            if(boardContent[this.id+7].color===0)
+            if(boardContent[this.id+7].color===0) {
                 this.legalTarget.push(this.id+7)
-            if(boardContent[this.id+9].color===0)
+                this.attackTarget.push(this.id+7)
+            }
+            if(boardContent[this.id+9].color===0) {
                 this.legalTarget.push(this.id+9)
+                this.attackTarget.push(this.id+9)
+            }
         }
     }
 
@@ -334,8 +344,214 @@ class Square {
             default:
                 break
         }
+        var selfColor = this.color
+        for(var i=0; i<this.legalTarget.length; i++) {
+            moveList.push(new Move(this, boardContent[this.legalTarget[i]]))
+            if(boardContent[this.legalTarget[i]].pieceId!=0) {
+                if(boardContent[this.legalTarget[i]].color===0) {
+                    blackCaptured.push(boardContent[this.legalTarget[i]].pieceId)
+                }
+                else
+                {
+                    whiteCaptured.push(boardContent[this.legalTarget[i]].pieceId)
+                }
+            }
+            boardContent[this.legalTarget[i]].changePiece(this.pieceId)
+            this.changePiece(0)
+
+            if(checkCheck(selfColor)) {
+                this.legalTarget.splice(i, 1)
+                i--
+            } 
+
+            
+            moveColor = moveColor ^ 8
+            plyNumber++
+            Undo()
+        }
     }
 }
+
+
+
+function checkCheck(color) {
+    var King
+    for(var i=0; i<64; i++) {
+        if(boardContent[i].pieceId==6 && color==0) {
+            King = boardContent[i]  
+        }
+        else if(boardContent[i].pieceId==14 && color==8) {
+            King = boardContent[i]
+        }
+    }
+    
+    //CheckRook
+    var checkingSquare = King.id
+    var checkingrank = King.rank
+    var checkingfile = King.file+1
+    while(checkingrank<8) {
+        checkingSquare -= 8
+        checkingrank++
+        if(boardContent[checkingSquare].pieceId===(5|(King.color^8)) || boardContent[checkingSquare].pieceId===(4|(King.color^8)))
+            return true
+        else if(boardContent[checkingSquare].pieceId != 0)
+            break
+    }
+    checkingSquare = King.id
+    checkingrank = King.rank
+    checkingfile = King.file+1
+    while(checkingrank>1) {
+        checkingSquare += 8
+        checkingrank--
+        if(boardContent[checkingSquare].pieceId===(5|(King.color^8)) || boardContent[checkingSquare].pieceId===(4|(King.color^8)))
+            return true
+        else if(boardContent[checkingSquare].pieceId != 0)
+            break
+    }
+    checkingSquare = King.id
+    checkingrank = King.rank
+    checkingfile = King.file+1
+    while(checkingfile<8) {
+        checkingSquare += 1
+        checkingfile++
+        if(boardContent[checkingSquare].pieceId===(5|(King.color^8)) || boardContent[checkingSquare].pieceId===(4|(King.color^8)))
+            return true
+        else if(boardContent[checkingSquare].pieceId != 0)
+            break
+    }
+    checkingSquare = King.id
+    checkingrank = King.rank
+    checkingfile = King.file+1
+    while(checkingfile>1) {
+        checkingSquare -= 1
+        checkingfile--
+        if(boardContent[checkingSquare].pieceId===(5|(King.color^8)) || boardContent[checkingSquare].pieceId===(4|(King.color^8)))
+            return true
+        else if(boardContent[checkingSquare].pieceId != 0)
+            break
+    }
+
+    //CheckBishop
+    var checkingSquare = King.id
+    var checkingrank = King.rank
+    var checkingfile = King.file+1
+    while(checkingrank>1 && checkingfile<8) {
+        checkingSquare += 9
+        checkingrank--
+        checkingfile++
+        if(boardContent[checkingSquare].pieceId==(5|(King.color^8)) || boardContent[checkingSquare].pieceId==(3|(King.color^8)))
+            return true
+        else if(boardContent[checkingSquare].pieceId != 0)
+            break
+    }
+    checkingSquare = King.id
+    checkingrank = King.rank
+    checkingfile = King.file+1
+    while(checkingrank<8 && checkingfile<8) {
+        checkingSquare -= 7
+        checkingrank++
+        checkingfile++
+        if(boardContent[checkingSquare].pieceId==(5|(King.color^8)) || boardContent[checkingSquare].pieceId==(3|(King.color^8)))
+           return true
+        else if(boardContent[checkingSquare].pieceId != 0)
+            break
+    }
+    checkingSquare = King.id
+    checkingfile = King.file+1
+    checkingrank = King.rank
+    while(checkingrank<8 && checkingfile>1) {
+        checkingSquare -= 9
+        checkingrank++
+        checkingfile--
+        if(boardContent[checkingSquare].pieceId==(5|(King.color^8)) || boardContent[checkingSquare].pieceId==(3|(King.color^8)))
+            return true
+        else if(boardContent[checkingSquare].pieceId != 0)
+            break
+    }
+    checkingSquare = King.id
+    checkingfile = King.file+1
+    checkingrank = King.rank
+    while(checkingrank>1 && checkingfile>1) {
+        checkingSquare += 7
+        checkingrank--
+        checkingfile--
+        if(boardContent[checkingSquare].pieceId==(5|(King.color^8)) || boardContent[checkingSquare].pieceId==(3|(King.color^8)))
+            return true
+        else if(boardContent[checkingSquare].pieceId != 0)
+            break
+    }
+
+    //CheckKnight
+    var AttackSquare = []
+    if(King.rank>=3 && King.file>=1)
+        AttackSquare.push(King.id+15)
+    if(King.rank>=3 && King.file<=6)
+        AttackSquare.push(King.id+17)
+    if(King.rank>=2 && King.file<=5)
+        AttackSquare.push(King.id+10)
+    if(King.rank<=7 && King.file<=5)
+        AttackSquare.push(King.id-6)
+    if(King.rank<=6 && King.file<=6)
+        AttackSquare.push(King.id-15)
+    if(King.rank<=6 && King.file>=1)
+        AttackSquare.push(King.id-17)
+    if(King.rank<=7 && King.file>=2)
+        AttackSquare.push(King.id-10)
+    if(King.rank>=2 && King.file>=2)
+        AttackSquare.push(King.id+6)
+    
+    for(var i=0; i<AttackSquare.length; i++) {
+        if(boardContent[AttackSquare[i]].pieceId==(2|(King.color^8)))
+            return true
+    }
+
+    //CheckKing
+    AttackSquare = []
+    if(King.id==0) {AttackSquare = [1, 8, 9]}
+    else if(King.id==7) {AttackSquare = [6, 14, 15]}
+    else if(King.id==56) {AttackSquare = [48, 49, 57]}
+    else if(King.id==63) {AttackSquare = [54, 55, 62]}
+    else if(King.rank==1) {
+        var temp = King.id
+        AttackSquare = [temp-1, temp+1, temp-7, temp-8, temp-9]
+    }
+    else if(King.rank==8) {
+        var temp = King.id
+        AttackSquare = [temp-1, temp+1, temp+7, temp+8, temp+9]
+    }
+    else if(King.file==0) {
+        var temp = King.id
+        AttackSquare = [temp-8, temp-7, temp+1, temp+8, temp+9]
+    }
+    else if(King.file==7) {
+        var temp = King.id
+        AttackSquare = [temp-9, temp-8, temp-1, temp+7, temp+8]
+    }
+    else {
+        var temp = King.id
+        AttackSquare = [temp-9, temp-8, temp-7, temp-1, temp+1, temp+7, temp+8, temp+9]
+    }
+    for(var i=0; i<AttackSquare.length; i++) {
+        if(boardContent[AttackSquare[i]].pieceId==(6|(King.color^8)))
+            return true
+    }
+
+    //CheckPawn
+    AttackSquare = []
+    if(King.color==0 && King.rank<8)
+        AttackSquare = [King.id-7, King.id-9]
+    else if(King.color==8 && King.rank>1)
+        AttackSquare = [King.id+7, King.id+9]
+    for(var i=0; i<AttackSquare.length; i++) {
+        if(boardContent[AttackSquare[i].pieceId == (1|(King.color^8))])
+            return true
+    }
+
+    return false;
+}
+
+
+
 
 var plyNumber = 1
 var moveList = []
@@ -465,7 +681,13 @@ function presentBoard() {
         $('#'+i).css('background-color', (boardContent[i].rank+boardContent[i].file)%2==1 ? '#694232' : '#ffd993').css('border', '0px')
     }
 
-    
+    for(var i=0; i<64; i++) {
+        if(boardContent[i].pieceId!=0) {
+            boardContent[i].clearLegalTarget()
+            boardContent[i].checkPiece()
+        }
+    }
+
     if(moveList.length!=0) {
         var lastMove = moveList[moveList.length-1]
         var lastFrom = boardContent[lastMove.fromSquare]
@@ -479,7 +701,7 @@ function presentBoard() {
             $('#'+String(pickedUpSquare)).css('background-color', '#2f3340')
             for(var i=0; i<boardContent[pickedUpSquare].legalTarget.length; i++) {
                 var temp = boardContent[pickedUpSquare].legalTarget[i]
-                $('#'+String(temp)).css('border', '2px solid #4f788f')
+                $('#'+String(temp)).css('border', '3px solid #4f788f')
             }
         }
     }
@@ -522,13 +744,26 @@ function presentBoard() {
             $('tr#blackCapturedList').append(capPiece)
         }
     }
+
+    var whiteKing, blackKing
+    for(var i=0; i<64; i++) {
+        if(boardContent[i].pieceId==6)
+            whiteKing = boardContent[i]
+        else if(boardContent[i].pieceId==14)
+            blackKing = boardContent[i]
+    }
+    if(checkCheck(0)) {
+        $('#'+whiteKing.id).css('border', '3px solid #ff0000')
+    }
+    if(checkCheck(8)) {
+        $('#'+blackKing.id).css('border', '3px solid #ff0000')
+    }
 }
 
 buildBoard()
 
 function move(from, to) {
     if(verifyMove(from,to)) {
-        var movedPiece = from.pieceId
         if(to.pieceId!=0) {
             if(from.color==0)
             whiteCaptured.push(to.pieceId)
@@ -537,8 +772,8 @@ function move(from, to) {
         }
         var newMove = new Move(from, to)
         moveList.push(newMove)
+        to.changePiece(from.pieceId)
         from.changePiece(0)
-        to.changePiece(movedPiece)
         plyNumber++
 		moveColor = moveColor ^ 8
     }
@@ -580,8 +815,6 @@ function selectSquare(e) {
         if(verifyMoveColor(boardContent[squareId].color)) {
 			pickedUpSquare = squareId
 			pickedUp = true
-            boardContent[squareId].clearLegalTarget()
-            boardContent[squareId].checkPiece()
 			presentBoard()
         }
     }
@@ -619,10 +852,15 @@ function Undo() {
     boardContent[lastMove.toSquare].changePiece(lastMove.toPiece)
     
     moveList.splice(moveList.length-1, 1)
+    
     moveColor = moveColor ^ 8
     plyNumber--
+}
+
+function UndoButton() {
+    Undo()
     presentBoard()
 }
 
-document.getElementById('undo').addEventListener('click', Undo)
+document.getElementById('undo').addEventListener('click', UndoButton)
 document.getElementById('ChessBoard').addEventListener('click', selectSquare)
