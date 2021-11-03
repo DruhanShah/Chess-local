@@ -833,11 +833,14 @@ function move(from, to) {
 			else
 			blackCaptured.push(to.pieceId)
 		}
+		
 		if(from.pieceId==1 && to.id===enPassant)
 			boardContent[to.id+8].changePiece(0)
 		else if(from.pieceId==9 && to.id===enPassant)
 			boardContent[to.id-8].changePiece(0)
 		
+		var newMove = new Ply(from, to)
+
 		if(from.pieceId==1 && from.id-to.id==16)
 			enPassant = from.id-8
 		else if(from.pieceId==9 && to.id-from.id==16)
@@ -845,7 +848,6 @@ function move(from, to) {
 		else
 			enPassant = null
 		
-		var newMove = new Ply(from, to)
 		to.changePiece(from.pieceId)
 		from.changePiece(0)
 		plyNumber++
@@ -855,19 +857,7 @@ function move(from, to) {
 		newMove.pushPosition()
 		moveList.push(newMove)
 
-		var randomString = ''
-		for(var i=0; i<64; i++) {
-			randomString += String(boardContent[i].pieceId)+' '
-		}
-		console.log(randomString)
-
 		presentBoard()
-
-		var randomString = ''
-		for(var i=0; i<64; i++) {
-			randomString += String(boardContent[i].pieceId)+' '
-		}
-		console.log(randomString)
 
 		var noLegalMoves = true
 		for(var i=0; i<64; i++) {
@@ -956,6 +946,7 @@ function Undo() {
 		else if(lastMove.fromColor==8)
 			{boardContent[lastMove.eP-8].changePiece(1)}
 	}
+	enPassant = lastMove.eP
 	moveList.splice(moveList.length-1, 1)
 	
 	moveColor = moveColor ^ 8
@@ -964,13 +955,8 @@ function Undo() {
 
 function UndoButton() {
 	Undo()
-	if(moveList.length!=0)
-		{enPassant = moveList[moveList.length-1].eP}
-	else
-		{
-			console.log("Empty list")
-			enPassant = null
-		}
+	pickedUp = false
+	pickedUpSquare = null
 	presentBoard()
 }
 
