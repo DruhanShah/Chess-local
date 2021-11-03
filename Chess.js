@@ -3,6 +3,11 @@ var darkSign = 'img/dark.svg'
 var lightSign = 'img/light.svg'
 var blackCaptured = []
 var whiteCaptured = []
+var darkSquare = '#777777'
+var lightSquare = '#ffffff'
+var selectColor = '#00b3a4'
+var movedColor = '#7bc77e'
+var checkedColor = '#f22e1f'
 
 function checkSize() {
     if($(window).height()/$(window).width()<0.9) {
@@ -565,6 +570,13 @@ class Ply {
         this.toPiece = to.pieceId
         this.toColor = to.color
         this.number = plyNumber
+        this.position = []
+    }
+
+    pushPosition() {
+        for(var i=0; i<64; i++) {
+            this.position.push(boardContent[i].pieceId)
+        }
     }
 }
 
@@ -598,7 +610,7 @@ function buildBoard() {
 
         for(var file = 0; file<8; file++) {
             var square = $('<td id='+String((8*rank)+file)+'></td>')
-            square.css('backgroundColor', (rank+file)%2===1 ? '#694232' : '#ffd993').width('10%').height('10%')
+            square.width('10%').height('10%').css('border-radius', '1vmin')
 
             row.append(square)
         }
@@ -617,7 +629,7 @@ function buildBoard() {
     blankrow.append(blanksquare)
 
     for(var file = 0; file<8; file++) {
-        var square = $('<td>'+String.fromCharCode(97+file)+'</td>')
+        var square = $('<td>'+String.fromCharCode(65+file)+'</td>')
         square.width('10%').height('10%')
         blankrow.append(square)
     }
@@ -661,6 +673,7 @@ function startingPosition() {
     boardContent[62].changePiece(2)
     boardContent[63].changePiece(4)
 
+    moveColor = 0
     moveList = []
     whiteCaptured = []
     blackCaptured = []
@@ -679,7 +692,7 @@ function presentBoard() {
     document.getElementById('moveIndicator').style.backgroundColor = moveColor==8 ? '#000000' : '#ffffff'
 	
     for(var i=0; i<64; i++) {
-        $('#'+i).css('background-color', (boardContent[i].rank+boardContent[i].file)%2==1 ? '#694232' : '#ffd993').css('border', '0px')
+        $('#'+i).css('background-color', (boardContent[i].rank+boardContent[i].file)%2==1 ? darkSquare : lightSquare).css('border', '0px')
     }
 
     for(var i=0; i<64; i++) {
@@ -691,18 +704,16 @@ function presentBoard() {
 
     if(moveList.length!=0) {
         var lastMove = moveList[moveList.length-1]
-        var lastFrom = boardContent[lastMove.fromSquare]
-        var lastTo = boardContent[lastMove.toSquare]
-        $('#'+String(lastMove.fromSquare)).css('background-color', (lastFrom.rank+lastFrom.file)%2==1 ? '#3b633c' : '#7bc77e' )
-        $('#'+String(lastMove.toSquare)).css('background-color', (lastTo.rank+lastTo.file)%2==1 ? '#3b633c' : '#7bc77e' )
+        $('#'+String(lastMove.fromSquare)).css('background-color', movedColor)
+        $('#'+String(lastMove.toSquare)).css('background-color', movedColor)
     }
 
     if(pickedUpSquare!==null) {
         if(pickedUp) {
-            $('#'+String(pickedUpSquare)).css('background-color', '#2f3340')
+            $('#'+String(pickedUpSquare)).css('background-color', selectColor)
             for(var i=0; i<boardContent[pickedUpSquare].legalTarget.length; i++) {
                 var temp = boardContent[pickedUpSquare].legalTarget[i]
-                $('#'+String(temp)).css('border', '3px solid #4f788f')
+                $('#'+String(temp)).css('border', '3px solid '+selectColor)
             }
         }
     }
@@ -754,25 +765,32 @@ function presentBoard() {
             blackKing = boardContent[i]
     }
     if(checkCheck(0)) {
-        $('#'+whiteKing.id).css('border', '3px solid #ff0000')
+        $('#'+whiteKing.id).css('border', '3px solid '+checkedColor)
     }
     if(checkCheck(8)) {
-        $('#'+blackKing.id).css('border', '3px solid #ff0000')
+        $('#'+blackKing.id).css('border', '3px solid '+checkedColor)
     }
 }
 
 buildBoard()
 
 function GameResult(result) {
-    if(result=='Checkmate') {
-        $('#ResultType').html('<h3>'+ (moveColor==0 ? 'Black' : 'White') +' wins!</h3>')
-        $('#ResultDesc').html('by Checkmate')
-        $('#ModalBox').css('display', 'block')
-    }
-    else if(result=='Stalemate') {
-        $('#ResultType').html('<h3>Draw</h3>')
-        $('#ResultDesc').html('by Stalemate')
-        $('#ModalBox').css('display', 'block')
+    switch(result) {
+        case 'Checkmate':
+            $('#ResultType').html('<h3>'+ (moveColor==0 ? 'Black' : 'White') +' wins!</h3>')
+            $('#ResultDesc').html('by Checkmate')
+            $('#ModalBox').css('display', 'block')
+            break
+        case 'Stalemate':
+            $('#ResultType').html('<h3>Draw</h3>')
+            $('#ResultDesc').html('by Stalemate')
+            $('#ModalBox').css('display', 'block')
+            break
+        case 'Repetition':
+            $('#ResultType').html('<h3>Draw</h3>')
+            $('#ResultDesc').html('by Threefold Repetition')
+            $('#ModalBox').css('display', 'block')
+            break
     }
     document.getElementById('undo').removeEventListener('click', UndoButton)
     document.getElementById('ChessBoard').removeEventListener('click', selectSquare)
@@ -794,6 +812,7 @@ function move(from, to) {
 		moveColor = moveColor ^ 8
         pickedUp = false
         pickedUpSquare = null
+        newMove.pushPosition()
         presentBoard()
 
         var noLegalMoves = true
@@ -805,6 +824,20 @@ function move(from, to) {
             GameResult('Checkmate')
         else if(noLegalMoves && !checkCheck(moveColor))
             GameResult('Stalemate')
+        
+        var repetition = true
+        var repetitionCounter = 0
+        for(var i=0; i<moveList.length; i++) {
+             repetition = true
+            for(var ii=0; ii<64; ii++) {
+                if(newMove.position[ii]!=moveList[i].position[ii])
+                    repetition = false;
+            }
+            if(repetition)
+                repetitionCounter++
+            if(repetitionCounter==3)
+                GameResult('Repetition')
+        }
     }
     else {
         pickedUp = false
