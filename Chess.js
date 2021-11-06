@@ -49,21 +49,21 @@ var enPassant = null
 function colorSwitch() {
 	darkMode = !darkMode
 	if(darkMode) {
-		$('body').css('background-color', '#252525').css('color', '#e7e4e4')
-		$('#topnavbar').css('background-color', '#161515').css('color', '#c7c4c4')
+		$('body').css('background-image', 'linear-gradient(#212027, #161515 15%)').css('color', '#e7e4e4')
+		$('#topnavbar').css('color', '#c7c4c4')
 		$('#darkmodeButton').css('background-color', '#3f3f3f').css('color', '#ffe3c4').css('border-color', '#ffe3c4')
 		$('#HowToText').css('color', '#ffffff').css('border', '1px solid #e7e4e4').css('background-color', '#161515')
-		$('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4')
-		$('#PlayerTextWide').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4')
+		$('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
+		$('#PlayerTextWide').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
 		$('#darkmodeicon').attr('src', lightSign)
 	}
 	else {
-		$('body').css('background-color', '#e7e4e4').css('color', '#272424')
-		$('#topnavbar').css('background-color', '#b8b8b8').css('color', '#272424')
+		$('body').css('background-image', 'linear-gradient(#a1a2b5, #c0c0c5 15%)').css('color', '#272424')
+		$('#topnavbar').css('color', '#272424')
 		$('#darkmodeButton').css('background-color', '#b8b8b8').css('color', '#3f3f3f').css('border-color', '#3f3f3f')
 		$('#HowToText').css('color', '#272424').css('border', '1px solid #272424').css('background-color', '#b8b8b8')
-		$('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #161515')
-		$('#PlayerTextWide').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #161515')
+		$('#PlayerTextLong').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
+		$('#PlayerTextWide').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
 		$('#darkmodeicon').attr('src', darkSign)
 	}
 }
@@ -575,7 +575,7 @@ function checkCheck(color) {
 	else if(King.color==8 && King.rank>1)
 		AttackSquare = [King.id+7, King.id+9]
 	for(var i=0; i<AttackSquare.length; i++) {
-		if(boardContent[AttackSquare[i].pieceId == (1|(King.color^8))])
+		if(boardContent[AttackSquare[i]].pieceId == (1|(King.color^8)))
 			return true
 	}
 
@@ -806,19 +806,19 @@ buildBoard()
 function GameResult(result) {
 	switch(result) {
 		case 'Checkmate':
-			$('#ResultType').html('<h3>'+ (moveColor==0 ? 'Black' : 'White') +' wins!</h3>')
+			$('#ResultType').html((moveColor==0 ? 'BLACK' : 'WHITE') +' WINS!')
 			$('#ResultDesc').html('by Checkmate')
-			$('#ModalBox').css('display', 'block')
+			$('#ModalBox1').css('display', 'block')
 			break
 		case 'Stalemate':
-			$('#ResultType').html('<h3>Draw</h3>')
+			$('#ResultType').html('DRAW')
 			$('#ResultDesc').html('by Stalemate')
-			$('#ModalBox').css('display', 'block')
+			$('#ModalBox1').css('display', 'block')
 			break
 		case 'Repetition':
-			$('#ResultType').html('<h3>Draw</h3>')
+			$('#ResultType').html('DRAW')
 			$('#ResultDesc').html('by Threefold Repetition')
-			$('#ModalBox').css('display', 'block')
+			$('#ModalBox1').css('display', 'block')
 			break
 	}
 	document.getElementById('undo').removeEventListener('click', UndoButton)
@@ -961,7 +961,7 @@ function UndoButton() {
 }
 
 function newGame() {
-	$('#ModalBox').css('display', 'none')
+	$('#ModalBox1').css('display', 'none')
 	$('#ResultType').html('')
 	$('#ResultDesc').html('')
 	startingPosition()
@@ -976,14 +976,14 @@ document.getElementById('newGameButton').addEventListener('click', newGame)
 document.getElementById('seeBoardButton').addEventListener('click', function() {
 	$('#undo').css('display', 'none')
 	$('#ShowResult').css('display', 'block')
-	$('#ModalBox').css('display', 'none')
+	$('#ModalBox1').css('display', 'none')
 })
 document.getElementById('ShowResult').addEventListener('click', function() {
 	$('#undo').css('display', 'block')
 	$('#ShowResult').css('display', 'none')
-	$('#ModalBox').css('display', 'block')
+	$('#ModalBox1').css('display', 'block')
 })
-/* document.getElementById('Checkmate').addEventListener('click', function() {
+/*document.getElementById('Checkmate').addEventListener('click', function() {
 	GameResult('Checkmate')
 })
 document.getElementById('Stalemate').addEventListener('click', function() {

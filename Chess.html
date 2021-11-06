@@ -3,7 +3,9 @@
         
         <title>Sample Chess Program</title>
         <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
-        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@100;200;400;600&display=swap" rel="stylesheet">
         <style>
             a {
                 cursor:pointer;
@@ -19,21 +21,23 @@
                 color: #ffe3c4;
                 background-color: #3f3f3f;
                 border-radius: 20px;
-                border-width: 1px;
-                border-color: #ffe3c4;
+                border-width: 0;
             }
 
+            button#seeBoardButton:hover {
+                color: #ff9a9a
+            }
         </style>
         <link rel='icon' href='img/white_knight.svg'>
 
     </head>
-    <body style='background-color:#252525; margin:0; color:#e7e4e4; font-family:Roboto'>
+    <body style='background-image: linear-gradient(#212027, #161515 15%); margin:0; color:#e7e4e4; font-family:Fira Sans; font-weight:400'>
     <div id='NotModal' style='position:absolute; z-index:1; width:100%'>
-        <div id='topnavbar' style='margin:0px; margin-bottom: 3vmin; width:100%; height:11vh; background-color:#161515; color:#c7c4c4'>
-            <div id='pagetitle' style='margin-top: 3vh; margin-left:10px; float:left; width:fit-content; height:fit-content; font-family:Roboto; font-size:4vh; text-align:center;'>
+        <div id='topnavbar' style='margin:0px; margin-bottom: 3vmin; width:100%; height:11vh; color:#c7c4c4'>
+            <div id='pagetitle' style='margin-top: 3vh; margin-left:10px; float:left; width:fit-content; height:fit-content; font-family:Fira Sans; font-weight:400; font-size:4vh; text-align:center;'>
                 Not lichess.org
             </div>
-            <div id='darkmode' style='margin-top: 3vh; margin-right:55px; float:right; width:fit-content; height:fit-content; font-family:Roboto; font-size: 2vh; font-weight:100; cursor:pointer;'>
+            <div id='darkmode' style='margin-top: 3vh; margin-right:55px; float:right; width:fit-content; font-family:Roboto; font-size: 2vh; cursor:pointer;'>
                 <button id='darkmodeButton' style='width:fit-content; height:fit-content'><img id='darkmodeicon' src='img/light.svg' style='width:4vmin; height:4vmin;'></img></button>
             </div>
         </div>
@@ -43,33 +47,33 @@
         </tr>
         <tr>
             <td id='Players' class='wideScreen' style='width:35vw'>
-                <div id='PlayerTextWide' style='font-family:Arial; font-size: 2.5vmin; background-color:#4b4a4a; color:#ffffff; border:1px solid #e7e4e4; border-radius:5vmin; height:fit-content; text-align:justify; padding:5vmin; margin-right: 4vmin; margin-left:4vmin;'>
-                    <div id='White'>
+                <div id='PlayerTextWide' style='font-family:Fira Sans; font-size: 2.5vmin; font-weight: 100; background-color:#4b4a4a; color:#ffffff; border:1px solid #e7e4e4; border-radius:5vmin; height:fit-content; text-align:justify; padding:5vmin; margin-right: 4vmin; margin-left:4vmin;'>
+                    <div id='Black'>
+                        <div id='player8'>
+                            <img src='img/black_king.svg' style='width:2em; height:2em'> <span style='font-size:3.5vmin'>BLACK</span>
+                        </div>
+                        <div id='blackCaptured'>
+                            <table style='padding:0px'><tr id='blackCapturedList'>
+                            </tr></table>
+                        </div>
+                    </div>
+                    <div id='White' style='margin-top:20vh'>
                         <div id='player0'>
-                            <img src='img/white_king.svg' style='width:2em; height:2em'> White
+                            <img src='img/white_king.svg' style='width:2em; height:2em'> <span style='font-size:3.5vmin'>WHITE</span>
                         </div>
                         <div id='whiteCaptured'>
                             <table><tr id='whiteCapturedList'>
                             </tr></table>
                         </div>
                     </div>
-                    <div id='Black' style='margin-top:20vh'>
-                        <div id='player8'>
-                            <img src='img/black_king.svg' style='width:2em; height:2em'> Black
-                        </div>
-                        <div id='blackCaptured'>
-                            <table style='padding:0px; margin-bottom:10px;'><tr id='blackCapturedList'>
-                            </tr></table>
-                        </div>
-                    </div>
                 </div>
             </td>
             <td id='playingArea'>
-                <div id='boardArea' style='margin-left:auto; margin-right:auto; width:75vmin; height:75vmin; background-color:#414141; border-radius:3vmin; padding:0px'>
+                <div id='boardArea' style='margin-left:auto; margin-right:auto; width:75vmin; height:75vmin; background-color:#292929; border-radius:3vmin; padding:0px; color:#e7e4e4'>
                     <table id='ChessBoard' style='width:100%; height:100%; margin:0px; border-width:0px;'>
                     </table><br>
-                    <button id='undo' style='margin-left:auto; margin-right:auto; padding:0.5vmin'>Undo last ply</button>
-                    <button id='ShowResult' style='margin-left:auto; margin-right:auto; display:none; padding:0.5vmin'>Result</button>
+                    <button id='undo' style='margin-left:auto; margin-right:auto; padding:1vmin'>Undo last ply</button>
+                    <button id='ShowResult' style='margin-left:auto; margin-right:auto; display:none; padding:1vmin'>Result</button>
                 </div>
             </td>
         </tr>
@@ -100,13 +104,22 @@
         </table>
         <!--<div><h2>Debug Tools</h2> <button id='Checkmate'>Induce Checkmate</button> <br> <button id='Stalemate'> Induce Stalemate</button></div>-->
     </div>
-    <div id='ModalBox' style='width:100%; height:100%; position:absolute; z-index:9999; display:none; background-color:rgba(0,0,0,0.6)'>
-    <div id='ResultModal' style='vertical-align:middle;text-align:center; background-color:#161515; color:#c7c4c4; padding: 3vmin; border: 1px solid grey; border-radius: 3vmin; position:absolute; top:25vh; left:40vw; width:fit-content; height:fit-content'>
-        <div id='ResultType'></div>
-        <div id='ResultDesc'></div>
-        <button id='newGameButton' style='width:fit-content; height:5vh; margin-bottom:1vmin; margin-top:5vmin'>New Game</button><br>
-        <button id='seeBoardButton' style='width:fit-content; height:5vh; margin-bottom:5vmin; margin-top:1vmin'>Show Board</button>
+    <div id='ModalBox1' style='width:100%; height:100%; position:absolute; z-index:9999; display:none; background-color:rgba(0,0,0,0.6)'>
+        <div id='ResultModal' style='vertical-align:middle;text-align:center; background-color:#161515; color:#c7c4c4; padding-top:1vmin; padding-bottom:2vmin; padding-left:2vmin; padding-right:2vmin; border: 1px solid grey; border-radius: 3vmin; position:absolute; top:25vh; left:40vw; width:10vw; height:fit-content'>
+            <button id='seeBoardButton' style='position:relative; z-index:10000; background-color:#161515; width:fit-content; font-size:1.5em; float:right; padding:0;'>&times;</button><br><br>
+            <div id='ResultType' style='font-size:2em; font-weight:600; text-align:center;'></div><br>
+            <div id='ResultDesc'></div>
+            <button id='newGameButton' style='width:fit-content; margin-bottom:1vmin; margin-top:6vmin; padding:2vmin'>New Game</button>
+        </div>
     </div>
+    <div id='ModalBox2' style='width:100%; height:100%; position:absolute; z-index:9998; display:none; background-color:rgba(0,0,0,0.6)'>
+        <div id='PromoteModal' style='vertical-align:middle;text-align:center; background-color:#161515; color:#c7c4c4; padding: 3vmin; border: 1px solid grey; border-radius: 3vmin; position:absolute; top:25vh; left:40vw; width:fit-content; height:fit-content'>
+            <div id='Promote Title'>Choose piece to promote to</div>
+            <button id='QButton' style='width:fit-content; height:fit-content; margin-bottom:1vmin; margin-top:5vmin'></button>
+            <button id='RButton' style='width:fit-content; height:fit-content; margin-bottom:1vmin; margin-top:1vmin'></button>
+            <button id='BButton' style='width:fit-content; height:fit-content; margin-bottom:1vmin; margin-top:1vmin'></button>
+            <button id='NButton' style='width:fit-content; height:fit-content; margin-bottom:5vmin; margin-top:1vmin'></button>
+        </div>
     </div>
     <script src='Chess.js'></script>
     </body>
