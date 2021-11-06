@@ -54,7 +54,11 @@ function colorSwitch() {
 		$('#darkmodeButton').css('background-color', '#3f3f3f').css('color', '#ffe3c4').css('border-color', '#ffe3c4')
 		$('#HowToText').css('color', '#ffffff').css('border', '1px solid #e7e4e4').css('background-color', '#161515')
 		$('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
-		$('#PlayerTextWide').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
+		$('#White').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
+		$('#Black').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
+		$('#ResultModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '1px solid grey')
+		$('#seeBoardButton').css('background-color', '#161515')
+		$('#PromoteModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '1px solid grey')
 		$('#darkmodeicon').attr('src', lightSign)
 	}
 	else {
@@ -63,7 +67,11 @@ function colorSwitch() {
 		$('#darkmodeButton').css('background-color', '#b8b8b8').css('color', '#3f3f3f').css('border-color', '#3f3f3f')
 		$('#HowToText').css('color', '#272424').css('border', '1px solid #272424').css('background-color', '#b8b8b8')
 		$('#PlayerTextLong').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
-		$('#PlayerTextWide').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
+		$('#White').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
+		$('#Black').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
+		$('#ResultModal').css('background-color', '#919191').css('color', '#161515').css('border', '1px solid #161515')
+		$('#seeBoardButton').css('background-color', '#919191')
+		$('#PromoteModal').css('background-color', '#919191').css('color', '#161515').css('border', '1px solid #161515')
 		$('#darkmodeicon').attr('src', darkSign)
 	}
 }
@@ -623,7 +631,7 @@ function buildBoard() {
 	var blankrow = $('<tr>')
 
 	var blanksquare = $('<td>')
-	blanksquare.attr('colspan', '10').height('10%')
+	blanksquare.attr('colspan', '10').attr('id','blank').height('10%')
 	blankrow.append(blanksquare)
 
 	board.append(blankrow)
@@ -633,7 +641,7 @@ function buildBoard() {
 		row.css('padding', '0')
 		
 		var blanksquare = $('<td>')
-		blanksquare.width('10%').height('10%')
+		blanksquare.width('10%').height('10%').attr('id', 'blank')
 		row.append(blanksquare)
 
 		for(var file = 0; file<8; file++) {
@@ -643,7 +651,7 @@ function buildBoard() {
 			row.append(square)
 		}
 		
-		var blanksquare = $('<td>'+String(8-rank)+'</td>')
+		var blanksquare = $('<td id="blank">'+String(8-rank)+'</td>')
 		blanksquare.width('10%').height('10%')
 		row.append(blanksquare)
 
@@ -653,16 +661,16 @@ function buildBoard() {
 	var blankrow = $('<tr>')
 
 	var blanksquare = $('<td>')
-	blanksquare.width('10%').height('10%')
+	blanksquare.width('10%').height('10%').attr('id','blank')
 	blankrow.append(blanksquare)
 
 	for(var file = 0; file<8; file++) {
-		var square = $('<td>'+String.fromCharCode(65+file)+'</td>')
+		var square = $('<td id="blank">'+String.fromCharCode(65+file)+'</td>')
 		square.width('10%').height('10%')
 		blankrow.append(square)
 	}
 	var cornersquare = $('<td>')
-	cornersquare.width('10%').height('10%')
+	cornersquare.width('10%').height('10%').attr('id', 'blank')
 	
 	var moveindicator = $("<div id='moveIndicator'>")
 	moveindicator.css('border', '5px solid grey').css('background-color', moveColor==8 ? '#000000' : '#ffffff')
@@ -892,20 +900,18 @@ function move(from, to) {
 
 function selectSquare(e) {
 	var selectedSquare
-	if(e.target.tagName=='IMG') {
+	if(e.target.tagName=='IMG')
 		selectedSquare = e.target.parentElement
-	}
-	else if(e.target.tagName=='TD'){
+	else if(e.target.tagName=='TD')
 		selectedSquare = e.target
-	}
-	else {
+	else
 		return null;
-	}
+	if(selectedSquare.getAttribute('id')=='blank')
+		return null;
 	var squareId = Number(selectedSquare.getAttribute('id'))
 	if(!pickedUp) {
-		if(boardContent[squareId].pieceId==0) {
+		if(boardContent[squareId].pieceId==0)
 			return null;
-		}
 		if(boardContent[squareId].color===moveColor) {
 			pickedUpSquare = squareId
 			pickedUp = true
@@ -917,9 +923,8 @@ function selectSquare(e) {
 }
 
 function Undo() {
-	if(moveList.length==0) {
+	if(moveList.length==0)
 		return null
-	}
 	var lastMove = moveList[moveList.length-1]
 	
 	if(lastMove.toColor===0) {
