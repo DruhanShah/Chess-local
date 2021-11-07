@@ -3,8 +3,8 @@ var darkSign = 'img/dark.svg'
 var lightSign = 'img/light.svg'
 var blackCaptured = []
 var whiteCaptured = []
-var darkSquare = '#777777'
-var lightSquare = '#ffffff'
+var darkSquare = '#555555'
+var lightSquare = '#cccccc'
 var selectColor = '#00b3a4'
 var movedColor = '#7bc77e'
 var checkedColor = '#ff0000'
@@ -49,41 +49,47 @@ var enPassant = null
 function colorSwitch() {
 	darkMode = !darkMode
 	if(darkMode) {
-		$('body').css('background-image', 'linear-gradient(#212027, #161515 15%)').css('color', '#e7e4e4')
+		$('body').css('background-image', 'linear-gradient(#00282b, #0e0e0e 15%)').css('color', '#e7e4e4')
 		$('#topnavbar').css('color', '#c7c4c4')
-		$('#darkmodeButton').css('background-color', '#3f3f3f').css('color', '#ffe3c4').css('border-color', '#ffe3c4')
+		$('#boardArea').css('border', '2px solid #00ccff')
+		$('#undo').css('border', '2px solid #00ccff')
+		$('#darkmodeButton').css('background-color', '#3f3f3f').css('color', '#ffe3c4').css('border', '2px solid #00ccff')
 		$('#HowToText').css('color', '#ffffff').css('border', '1px solid #e7e4e4').css('background-color', '#161515')
 		$('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
-		$('#White').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
-		$('#Black').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
-		$('#ResultModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '1px solid grey')
-		$('#seeBoardButton').css('background-color', '#161515')
+		$('#White').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '2px solid #00ccff').css('font-weight','100')
+		$('#Black').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '2px solid #00ccff').css('font-weight','100')
+		$('#ResultModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '2px solid #00ccff')
+		$('#seeBoardButton').css('background-color', '#161515').css('color', '#ffe3c4')
 		$('#QButton').css('background-color', '#3f3f3f')
 		$('#RButton').css('background-color', '#3f3f3f')
 		$('#BButton').css('background-color', '#3f3f3f')
 		$('#NButton').css('background-color', '#3f3f3f')
-		$('#PromoteModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '1px solid grey').css('font-weight', '300')
+		$('#PromoteModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '1px solid #00ccff').css('font-weight', '300')
 		$('#darkmodeicon').attr('src', lightSign)
 	}
 	else {
 		$('body').css('background-image', 'linear-gradient(#a1a2b5, #c0c0c5 15%)').css('color', '#272424')
 		$('#topnavbar').css('color', '#272424')
-		$('#darkmodeButton').css('background-color', '#b8b8b8').css('color', '#3f3f3f').css('border-color', '#3f3f3f')
-		$('#HowToText').css('color', '#272424').css('border', '1px solid #272424').css('background-color', '#b8b8b8')
-		$('#PlayerTextLong').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
-		$('#White').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
-		$('#Black').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
-		$('#ResultModal').css('background-color', '#919191').css('color', '#161515').css('border', '1px solid #161515')
-		$('#seeBoardButton').css('background-color', '#919191')
+		$('#boardArea').css('border', '2px solid #161515')
+		$('#undo').css('border', '1px solid #161515')
+		$('#darkmodeButton').css('background-color', '#b8b8b8').css('color', '#3f3f3f').css('border', '1px solid #ffe3c4')
+		$('#HowToText').css('color', '#272424').css('border', '2px solid #272424').css('background-color', '#b8b8b8')
+		$('#PlayerTextLong').css('color', '#000000').css('background-color', '#919191').css('border', '2px solid #161515').css('font-weight','200')
+		$('#White').css('color', '#000000').css('background-color', '#919191').css('border', '2px solid #161515').css('font-weight','200')
+		$('#Black').css('color', '#000000').css('background-color', '#919191').css('border', '2px solid #161515').css('font-weight','200')
+		$('#ResultModal').css('background-color', '#919191').css('color', '#161515').css('border', '2px solid #161515')
+		$('#seeBoardButton').css('background-color', '#919191').css('color', '#161515')
 		$('#QButton').css('background-color', '#b8b8b8')
 		$('#RButton').css('background-color', '#b8b8b8')
 		$('#BButton').css('background-color', '#b8b8b8')
 		$('#NButton').css('background-color', '#b8b8b8')
-		$('#PromoteModal').css('background-color', '#919191').css('color', '#161515').css('border', '1px solid #161515').css('font-weight', '400')
+		$('#PromoteModal').css('background-color', '#919191').css('color', '#161515').css('border', '2px solid #161515').css('font-weight', '400')
 		$('#darkmodeicon').attr('src', darkSign)
 	}
 }
 document.getElementById('darkmodeButton').addEventListener('click', colorSwitch)
+
+var k=true,q=true,K=true,Q=true
 
 class Square {
 	constructor(number,piece) {
@@ -337,6 +343,114 @@ class Square {
 			if(boardContent[this.legalTarget[i]].color==this.color) {
 				this.legalTarget.splice(i,1)
 				i--
+			}
+		}
+		if(this.color==0) {
+			if(K) {
+				var canCastle = true
+				if(boardContent[this.id+1].pieceId==0) {
+					boardContent[this.id].changePiece(0)
+					boardContent[this.id+1].changePiece(6)
+					if(checkCheck(0))
+						canCastle = false
+					boardContent[this.id].changePiece(6)
+					boardContent[this.id+1].changePiece(0)
+				}
+				else
+					canCastle = false
+				if(boardContent[this.id+2].pieceId==0) {
+					boardContent[this.id].changePiece(0)
+					boardContent[this.id+2].changePiece(6)
+					if(checkCheck(0))
+						canCastle = false
+					boardContent[this.id].changePiece(6)
+					boardContent[this.id+2].changePiece(0)
+				}
+				else
+					canCastle = false
+				if(canCastle)
+					this.legalTarget.push(this.id+2)
+			}
+			if(Q) {
+				var canCastle = true
+				if(boardContent[this.id-1].pieceId==0) {
+					boardContent[this.id].changePiece(0)
+					boardContent[this.id-1].changePiece(6)
+					if(checkCheck(0))
+						canCastle = false
+					boardContent[this.id].changePiece(6)
+					boardContent[this.id-1].changePiece(0)
+				}
+				else
+					canCastle = false
+				if(boardContent[this.id-2].pieceId==0) {
+					boardContent[this.id].changePiece(0)
+					boardContent[this.id-2].changePiece(6)
+					if(checkCheck(0))
+						canCastle = false
+					boardContent[this.id].changePiece(6)
+					boardContent[this.id-2].changePiece(0)
+				}
+				else
+					canCastle = false
+				if(boardContent[this.id-3].pieceId!=0)
+					canCastle = false
+				if(canCastle)
+					this.legalTarget.push(this.id-2)
+			}
+		}
+		else {
+			if(k) {
+				var canCastle = true
+				if(boardContent[this.id+1].pieceId==0) {
+					boardContent[this.id].changePiece(0)
+					boardContent[this.id+1].changePiece(14)
+					if(checkCheck(8))
+						canCastle = false
+					boardContent[this.id].changePiece(14)
+					boardContent[this.id+1].changePiece(0)
+				}
+				else
+					canCastle = false
+				if(boardContent[this.id+2].pieceId==0) {
+					boardContent[this.id].changePiece(0)
+					boardContent[this.id+2].changePiece(14)
+					if(checkCheck(8))
+						canCastle = false
+					boardContent[this.id].changePiece(14)
+					boardContent[this.id+2].changePiece(0)
+				}
+				else
+					canCastle = false
+				if(canCastle)
+					this.legalTarget.push(this.id+2)
+			}
+			if(q) {
+				var canCastle = true
+				if(boardContent[this.id-1].pieceId==0) {
+					boardContent[this.id].changePiece(0)
+					boardContent[this.id-1].changePiece(14)
+					if(checkCheck(8))
+						canCastle = false
+					boardContent[this.id].changePiece(14)
+					boardContent[this.id-1].changePiece(0)
+				}
+				else
+					canCastle = false
+				if(boardContent[this.id-2].pieceId==0) {
+					boardContent[this.id].changePiece(0)
+					boardContent[this.id-2].changePiece(14)
+					if(checkCheck(8))
+						canCastle = false
+					boardContent[this.id-2].changePiece(0)
+					boardContent[this.id].changePiece(14)
+				}
+				else
+					canCastle = false
+				if(boardContent[this.id-3].pieceId!=0)
+					canCastle = false
+				if(canCastle)
+					this.legalTarget.push(this.id-2)
 			}
 		}
 	}
@@ -623,6 +737,9 @@ class Ply {
 		this.number = plyNumber
 		this.position = []
 		this.eP = enPassant
+		this.kingsideCastle = (from.pieceType==6 && to.id-from.id==2)
+		this.queensideCastle = (from.pieceType==6 && from.id-to.id==2)
+		this.castling = [K,Q,k,q]
 	}
 
 	pushPosition() {
@@ -850,67 +967,97 @@ function GameResult(result) {
 }
 
 function move(from, to) {
-	if(from.legalTarget.includes(to.id)) {
-		if(to.pieceId!=0) {
-			if(from.color==0)
-				whiteCaptured.push(to.pieceId)
-			else
-				blackCaptured.push(to.pieceId)
-		}
-		
-		if(from.pieceId==1 && to.id===enPassant)
-			boardContent[to.id+8].changePiece(0)
-		else if(from.pieceId==9 && to.id===enPassant)
-			boardContent[to.id-8].changePiece(0)
-		
-		var newMove = new Ply(from, to)
-
-		if(from.pieceId==1 && from.id-to.id==16)
-			enPassant = from.id-8
-		else if(from.pieceId==9 && to.id-from.id==16)
-			enPassant = from.id+8
+	if(to.pieceId!=0) {
+		if(from.color==0)
+		whiteCaptured.push(to.pieceId)
 		else
-			enPassant = null
-		
-		to.changePiece(from.pieceId)
-		from.changePiece(0)
-		plyNumber++
-		moveColor = moveColor ^ 8
-		pickedUp = false
-		pickedUpSquare = null
-		newMove.pushPosition()
-		moveList.push(newMove)
-
-		presentBoard()
-
-		var noLegalMoves = true
-		for(var i=0; i<64; i++) {
-			if(boardContent[i].color==moveColor && boardContent[i].legalTarget.length != 0)
-				noLegalMoves = false
-		}
-		if(noLegalMoves && checkCheck(moveColor))
-			GameResult('Checkmate')
-		else if(noLegalMoves && !checkCheck(moveColor))
-			GameResult('Stalemate')
-		
-		var repetition = true
-		var repetitionCounter = 0
-		for(var i=0; i<moveList.length; i++) {
-			 repetition = true
-			for(var ii=0; ii<64; ii++) {
-				if(newMove.position[ii]!=moveList[i].position[ii])
-					repetition = false;
-			}
-			if(repetition)
-				repetitionCounter++
-			if(repetitionCounter==3)
-				GameResult('Repetition')
-		}
+		blackCaptured.push(to.pieceId)
 	}
-	else {
-		pickedUp = false
-		pickedUpSquare = null
-		presentBoard()
+
+	if(from.pieceId==1 && to.id===enPassant)
+		boardContent[to.id+8].changePiece(0)
+	else if(from.pieceId==9 && to.id===enPassant)
+		boardContent[to.id-8].changePiece(0)
+	
+	var newMove = new Ply(from, to)
+	
+	if((K||Q) && from.pieceId==6) {
+		K = false
+		Q = false
+	}
+	else if((k||q) && from.pieceId==14) {
+		k = false
+		q = false
+	}
+	switch(from.id) {
+		case 0:
+			q = false
+			break
+		case 7:
+			k = false
+			break
+		case 56:
+			Q = false
+			break
+		case 63:
+			K = false
+			break
+	}
+	switch(to.id) {
+		case 0:
+			q = false
+			break
+		case 7:
+			k = false
+			break
+		case 56:
+			Q = false
+			break
+		case 63:
+			K = false
+			break
+	}
+
+	if(from.pieceId==1 && from.id-to.id==16)
+		enPassant = from.id-8
+	else if(from.pieceId==9 && to.id-from.id==16)
+		enPassant = from.id+8
+	else
+		enPassant = null
+	
+	to.changePiece(from.pieceId)
+	from.changePiece(0)
+	plyNumber++
+	moveColor = moveColor ^ 8
+	pickedUp = false
+	pickedUpSquare = null
+	newMove.pushPosition()
+	moveList.push(newMove)
+
+	presentBoard()
+
+	var noLegalMoves = true
+	for(var i=0; i<64; i++) {
+		if(boardContent[i].color==moveColor && boardContent[i].legalTarget.length != 0)
+			noLegalMoves = false
+	}
+	if(noLegalMoves && checkCheck(moveColor))
+		GameResult('Checkmate')
+	else if(noLegalMoves && !checkCheck(moveColor))
+		GameResult('Stalemate')
+	
+	var repetition = true
+	var repetitionCounter = 0
+	for(var i=0; i<moveList.length; i++) {
+			repetition = true
+		for(var ii=0; ii<64; ii++) {
+			if(newMove.position[ii]!=moveList[i].position[ii])
+				repetition = false;
+		}
+		if(repetition)
+			repetitionCounter++
+		if(repetitionCounter==3)
+			GameResult('Repetition')
 	}
 }
 
@@ -978,6 +1125,40 @@ function promote(from, to, promoteTo) {
 	document.getElementById('NButton').removeEventListener('click', function() {promote(from, to, from.color|2)})
 }
 
+function castle(from, to) {
+	var newMove = new Ply(from, to)
+	
+	var movedColor = from.color
+	if(to.id>from.id) {
+		boardContent[from.id].changePiece(0)
+		boardContent[from.id+1].changePiece(movedColor|4)
+		boardContent[from.id+2].changePiece(movedColor|6)
+		boardContent[from.id+3].changePiece(0)
+	}
+	else {
+		boardContent[from.id].changePiece(0)
+		boardContent[from.id-1].changePiece(movedColor|4)
+		boardContent[from.id-2].changePiece(movedColor|6)
+		boardContent[from.id-3].changePiece(0)
+		boardContent[from.id-4].changePiece(0)
+	}
+	if(movedColor==0) {
+		K = false
+		Q = false
+	}
+	else {
+		k = false
+		q = false
+	}
+	newMove.pushPosition()
+	pickedUp = false
+	pickedUpSquare = null
+	moveColor = moveColor^8
+	plyNumber++
+	moveList.push(newMove)
+	presentBoard()
+}
+
 function selectSquare(e) {
 	var selectedSquare
 	if(e.target.tagName=='IMG')
@@ -1001,8 +1182,16 @@ function selectSquare(e) {
 	else {
 		var from = boardContent[pickedUpSquare]
 		var to = boardContent[squareId]
+		if(!from.legalTarget.includes(to.id)) {
+			pickedUp = false
+			pickedUpSquare = null
+			presentBoard()
+			return null
+		}
 		if((from.pieceId==1 && to.rank==8)||(from.pieceId==9 && to.rank==1))
 			choosePromote(from,to)
+		else if(from.pieceType==6 && Math.abs(from.id-to.id)==2)
+			castle(from, to)
 		else
 			move(from, to)
 	}
@@ -1031,6 +1220,17 @@ function Undo() {
 	}
 	boardContent[lastMove.fromSquare].changePiece(lastMove.fromPiece)
 	boardContent[lastMove.toSquare].changePiece(lastMove.toPiece)
+
+	if((lastMove.fromPiece-lastMove.fromColor)==6 && (lastMove.toSquare-lastMove.fromSquare)==2) {
+		boardContent[lastMove.fromSquare+1].changePiece(0)
+		boardContent[lastMove.fromSquare+3].changePiece(lastMove.fromColor|4)
+	}
+	if((lastMove.fromPiece-lastMove.fromColor)==6 && (lastMove.toSquare-lastMove.fromSquare)==(-2)) {
+		boardContent[lastMove.fromSquare-1].changePiece(0)
+		boardContent[lastMove.fromSquare-3].changePiece(0)
+		boardContent[lastMove.fromSquare-4].changePiece(lastMove.fromColor|4)
+	}
+
 	if(lastMove.fromPiece%8==1 && lastMove.eP===lastMove.toSquare) {
 		if(lastMove.fromColor===0)
 			{boardContent[lastMove.eP+8].changePiece(9)}
@@ -1038,6 +1238,11 @@ function Undo() {
 			{boardContent[lastMove.eP-8].changePiece(1)}
 	}
 	enPassant = lastMove.eP
+	K = lastMove.castling[0]
+	Q = lastMove.castling[1]
+	k = lastMove.castling[2]
+	q = lastMove.castling[3]
+
 	moveList.splice(moveList.length-1, 1)
 	
 	moveColor = moveColor ^ 8
