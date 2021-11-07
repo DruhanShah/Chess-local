@@ -16,13 +16,12 @@ At the moment, the FEN input can only process the first two sections in a standa
 ## Chess-Board (JavaScript)
 
 A standard chessboard display that can move pieces with clicks. Drag-and-drop implementation is a WIP.  
-For the rules, the movement patterns of the pieces, checks, absolute pins, pawn promotion and _en passant_ have been added, but castling is a WIP too. Relative pins don't need to be implemented because they are still legal moves, you'll just lose a queen or so.   
+For the rules, the movement patterns of the pieces, checks, absolute pins, castling, pawn promotion and _en passant_ have been added. Relative pins don't need to be implemented because they are still legal moves, you'll just lose a queen or so.   
 Added Checkmate, Stalemate and Threefold Repetition results. The game can finally end! Draw by 50-move-rule and Insufficient Material are WIPs. Also, planning on making 50-move-rule and threefold repetition confirmation a little more efficient.  
 
 ## To-Do List
 
 - Complete FEN support for the C++ program
-- Castling
 - Draw by 50-Move-Rule
 - Draw by Insufficient Material
 - Not checking every move for Threefold Repetition
