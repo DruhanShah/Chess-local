@@ -58,7 +58,11 @@ function colorSwitch() {
 		$('#Black').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
 		$('#ResultModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '1px solid grey')
 		$('#seeBoardButton').css('background-color', '#161515')
-		$('#PromoteModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '1px solid grey')
+		$('#QButton').css('background-color', '#3f3f3f')
+		$('#RButton').css('background-color', '#3f3f3f')
+		$('#BButton').css('background-color', '#3f3f3f')
+		$('#NButton').css('background-color', '#3f3f3f')
+		$('#PromoteModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '1px solid grey').css('font-weight', '300')
 		$('#darkmodeicon').attr('src', lightSign)
 	}
 	else {
@@ -71,7 +75,11 @@ function colorSwitch() {
 		$('#Black').css('color', '#000000').css('background-color', '#919191').css('border', '1px solid #161515').css('font-weight','200')
 		$('#ResultModal').css('background-color', '#919191').css('color', '#161515').css('border', '1px solid #161515')
 		$('#seeBoardButton').css('background-color', '#919191')
-		$('#PromoteModal').css('background-color', '#919191').css('color', '#161515').css('border', '1px solid #161515')
+		$('#QButton').css('background-color', '#b8b8b8')
+		$('#RButton').css('background-color', '#b8b8b8')
+		$('#BButton').css('background-color', '#b8b8b8')
+		$('#NButton').css('background-color', '#b8b8b8')
+		$('#PromoteModal').css('background-color', '#919191').css('color', '#161515').css('border', '1px solid #161515').css('font-weight', '400')
 		$('#darkmodeicon').attr('src', darkSign)
 	}
 }
@@ -578,10 +586,18 @@ function checkCheck(color) {
 
 	//CheckPawn
 	AttackSquare = []
-	if(King.color==0 && King.rank<8)
-		AttackSquare = [King.id-7, King.id-9]
-	else if(King.color==8 && King.rank>1)
-		AttackSquare = [King.id+7, King.id+9]
+	if(King.color==0 && King.rank<8) {
+		if(King.file!=0)
+			AttackSquare.push(King.id-9)
+		if(King.file!=7)
+			AttackSquare.push(King.id-7)
+	}
+	else if(King.color==8 && King.rank>1) {
+		if(King.file!=0)
+			AttackSquare.push(King.id+7)
+		if(King.file!=7)
+			AttackSquare.push(King.id+9)
+	}
 	for(var i=0; i<AttackSquare.length; i++) {
 		if(boardContent[AttackSquare[i]].pieceId == (1|(King.color^8)))
 			return true
@@ -837,9 +853,9 @@ function move(from, to) {
 	if(from.legalTarget.includes(to.id)) {
 		if(to.pieceId!=0) {
 			if(from.color==0)
-			whiteCaptured.push(to.pieceId)
+				whiteCaptured.push(to.pieceId)
 			else
-			blackCaptured.push(to.pieceId)
+				blackCaptured.push(to.pieceId)
 		}
 		
 		if(from.pieceId==1 && to.id===enPassant)
@@ -898,6 +914,70 @@ function move(from, to) {
 	}
 }
 
+function choosePromote(from, to) {
+	$('#ModalBox2').css('display', 'block')
+	var img1 = $('<img>')
+	img1.attr('src', 'img/'+(from.color==0 ? 'white' : 'black')+'_queen.svg')
+	img1.width('5vmin').height('5vmin')
+	$('#QButton').append(img1)
+	var img2 = $('<img>')
+	img2.attr('src', 'img/'+(from.color==0 ? 'white' : 'black')+'_rook.svg')
+	img2.width('5vmin').height('5vmin')
+	$('#RButton').append(img2)
+	var img3 = $('<img>')
+	img3.attr('src', 'img/'+(from.color==0 ? 'white' : 'black')+'_bishop.svg')
+	img3.width('5vmin').height('5vmin')
+	$('#BButton').append(img3)
+	var img4 = $('<img>')
+	img4.attr('src', 'img/'+(from.color==0 ? 'white' : 'black')+'_knight.svg')
+	img4.width('5vmin').height('5vmin')
+	$('#NButton').append(img4)
+	document.getElementById('QButton').addEventListener('click', function() {promote(from, to, from.color|5)})
+	document.getElementById('RButton').addEventListener('click', function() {promote(from, to, from.color|4)})
+	document.getElementById('BButton').addEventListener('click', function() {promote(from, to, from.color|3)})
+	document.getElementById('NButton').addEventListener('click', function() {promote(from, to, from.color|2)})
+}
+
+function promote(from, to, promoteTo) {
+	if(to.pieceId!=0) {
+		if(from.color==0)
+			whiteCaptured.push(to.pieceId)
+		else
+			blackCaptured.push(to.pieceId)
+	}
+	var newMove = new Ply(from, to)
+	enPassant = null
+
+	to.changePiece(promoteTo)
+	from.changePiece(0)
+	plyNumber++
+	moveColor = moveColor ^ 8
+	pickedUp = false
+	pickedUpSquare = null
+	newMove.pushPosition()
+	moveList.push(newMove)
+
+	$('#ModalBox2').css('display', 'none')
+
+	presentBoard()
+
+	var noLegalMoves = true
+	for(var i=0; i<64; i++) {
+		if(boardContent[i].color==moveColor && boardContent[i].legalTarget.length != 0)
+			noLegalMoves = false
+	}
+	if(noLegalMoves && checkCheck(moveColor))
+		GameResult('Checkmate')
+	else if(noLegalMoves && !checkCheck(moveColor))
+		GameResult('Stalemate')
+
+	$('#ModalBox2').css('display', 'none')
+	document.getElementById('QButton').removeEventListener('click', function() {promote(from, to, from.color|5)})
+	document.getElementById('RButton').removeEventListener('click', function() {promote(from, to, from.color|4)})
+	document.getElementById('BButton').removeEventListener('click', function() {promote(from, to, from.color|3)})
+	document.getElementById('NButton').removeEventListener('click', function() {promote(from, to, from.color|2)})
+}
+
 function selectSquare(e) {
 	var selectedSquare
 	if(e.target.tagName=='IMG')
@@ -918,8 +998,14 @@ function selectSquare(e) {
 			presentBoard()
 		}
 	}
-	else
-		move(boardContent[pickedUpSquare], boardContent[squareId])
+	else {
+		var from = boardContent[pickedUpSquare]
+		var to = boardContent[squareId]
+		if((from.pieceId==1 && to.rank==8)||(from.pieceId==9 && to.rank==1))
+			choosePromote(from,to)
+		else
+			move(from, to)
+	}
 }
 
 function Undo() {
