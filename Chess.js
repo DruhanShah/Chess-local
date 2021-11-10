@@ -1200,6 +1200,19 @@ function castle(from, to) {
 	plyNumber++
 	moveList.push(newMove)
 	presentBoard()
+
+	var noLegalMoves = true
+	for(var i=0; i<64; i++) {
+		if(boardContent[i].color==moveColor && boardContent[i].legalTarget.length != 0)
+			noLegalMoves = false
+	}
+	if(noLegalMoves && checkCheck(moveColor))
+		GameResult('Checkmate')
+	else if(noLegalMoves && !checkCheck(moveColor))
+		GameResult('Stalemate')
+
+	if(fiftyMove==100)
+		GameResult('FMR')
 }
 
 function selectSquare(e) {
