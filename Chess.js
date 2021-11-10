@@ -45,6 +45,8 @@ var pieceImgList = [
 ]
 var boardContent = []
 var enPassant = null
+var fiftyMove = 0
+var irreversible = 0
 
 function colorSwitch() {
 	darkMode = !darkMode
@@ -740,6 +742,8 @@ class Ply {
 		this.kingsideCastle = (from.pieceType==6 && to.id-from.id==2)
 		this.queensideCastle = (from.pieceType==6 && from.id-to.id==2)
 		this.castling = [K,Q,k,q]
+		this.fmr = fiftyMove
+		this.irr = irreversible
 	}
 
 	pushPosition() {
@@ -847,6 +851,8 @@ function startingPosition() {
 	whiteCaptured = []
 	blackCaptured = []
 	enPassant = null
+	fiftyMove = 0
+	irreversible = 0
 	presentBoard()
 }
 
@@ -940,6 +946,8 @@ function presentBoard() {
 	if(checkCheck(8)) {
 		$('#'+blackKing.id).css('border', '3px solid '+checkedColor)
 	}
+
+	console.log(fiftyMove, irreversible)
 }
 
 buildBoard()
@@ -961,6 +969,11 @@ function GameResult(result) {
 			$('#ResultDesc').html('by Threefold Repetition')
 			$('#ModalBox1').css('display', 'block')
 			break
+		case 'FMR':
+			$('#ResultType').html('DRAW')
+			$('#ResultDesc').html('by 50 Move Rule')
+			$('#ModalBox1').css('display', 'block')
+			break
 	}
 	document.getElementById('undo').removeEventListener('click', UndoButton)
 	document.getElementById('ChessBoard').removeEventListener('click', selectSquare)
@@ -969,10 +982,18 @@ function GameResult(result) {
 function move(from, to) {
 	if(to.pieceId!=0) {
 		if(from.color==0)
-		whiteCaptured.push(to.pieceId)
+			whiteCaptured.push(to.pieceId)
 		else
-		blackCaptured.push(to.pieceId)
+			blackCaptured.push(to.pieceId)
+		fiftyMove = 0
+		irreversible = plyNumber
 	}
+	else if(from.pieceType==1) {
+		fiftyMove = 0
+		irreversible = plyNumber
+	}
+	else
+		fiftyMove++
 
 	if(from.pieceId==1 && to.id===enPassant)
 		boardContent[to.id+8].changePiece(0)
@@ -1048,7 +1069,7 @@ function move(from, to) {
 	
 	var repetition = true
 	var repetitionCounter = 0
-	for(var i=0; i<moveList.length; i++) {
+	for(var i=Math.max(0, irreversible-1); i<moveList.length; i++) {
 			repetition = true
 		for(var ii=0; ii<64; ii++) {
 			if(newMove.position[ii]!=moveList[i].position[ii])
@@ -1059,6 +1080,9 @@ function move(from, to) {
 		if(repetitionCounter==3)
 			GameResult('Repetition')
 	}
+
+	if(fiftyMove==100)
+		GameResult('FMR')
 }
 
 function choosePromote(from, to) {
@@ -1091,13 +1115,16 @@ function promote(from, to, promoteTo) {
 			whiteCaptured.push(to.pieceId)
 		else
 			blackCaptured.push(to.pieceId)
+		fiftyMove = 0
 	}
+	irreversible = plyNumber
 	var newMove = new Ply(from, to)
 	enPassant = null
 
 	to.changePiece(promoteTo)
 	from.changePiece(0)
 	plyNumber++
+	irreversible = plyNumber
 	moveColor = moveColor ^ 8
 	pickedUp = false
 	pickedUpSquare = null
@@ -1126,6 +1153,7 @@ function promote(from, to, promoteTo) {
 }
 
 function castle(from, to) {
+	irreversible = plyNumber
 	var newMove = new Ply(from, to)
 	
 	var movedColor = from.color
@@ -1242,6 +1270,8 @@ function Undo() {
 	Q = lastMove.castling[1]
 	k = lastMove.castling[2]
 	q = lastMove.castling[3]
+	irreversible = lastMove.irr
+	fiftyMove = lastMove.fmr
 
 	moveList.splice(moveList.length-1, 1)
 	
