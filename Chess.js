@@ -89,7 +89,7 @@ function colorSwitch() {
 		$('#darkmodeicon').attr('src', darkSign)
 	}
 }
-document.getElementById('darkmodeButton').addEventListener('click', colorSwitch)
+document.getElementById('darkmode').addEventListener('click', colorSwitch)
 
 var k=true,q=true,K=true,Q=true
 
@@ -762,6 +762,7 @@ var pickedUp = false
 var pickedUpSquare = null
 var moveColor = 0
 
+var bottomColor = 0
 function buildBoard() {
 	var board = $('#ChessBoard')
 
@@ -788,7 +789,7 @@ function buildBoard() {
 			row.append(square)
 		}
 		
-		var blanksquare = $('<td id="blank">'+String(8-rank)+'</td>')
+		var blanksquare = $('<td id="blank" class="rank'+String(rank)+'">'+String(8-rank)+'</td>')
 		blanksquare.width('10%').height('10%')
 		row.append(blanksquare)
 
@@ -802,7 +803,7 @@ function buildBoard() {
 	blankrow.append(blanksquare)
 
 	for(var file = 0; file<8; file++) {
-		var square = $('<td id="blank">'+String.fromCharCode(65+file)+'</td>')
+		var square = $('<td id="blank" class="file'+String(file)+'">'+String.fromCharCode(65+file)+'</td>')
 		square.width('10%').height('10%')
 		blankrow.append(square)
 	}
@@ -853,6 +854,22 @@ function startingPosition() {
 	enPassant = null
 	fiftyMove = 0
 	irreversible = 0
+	presentBoard()
+}
+
+function flipBoard() {
+	listOfTable = []
+	for(var i=0; i<64; i++)
+		listOfTable.push($('#'+String(i)))
+	for(var i=0; i<64; i++)
+		listOfTable[i].attr('id', 63-i)
+
+	for(var i=0; i<8; i++) {
+		$('td.rank'+String(i)).html(bottomColor==8 ? String(8-i) : String(1+i))
+		$('td.file'+String(i)).html(bottomColor==8 ? String.fromCharCode(65+i) : String.fromCharCode(72-i))
+	}
+
+	bottomColor = bottomColor ^ 8
 	presentBoard()
 }
 
@@ -946,8 +963,6 @@ function presentBoard() {
 	if(checkCheck(8)) {
 		$('#'+blackKing.id).css('border', '3px solid '+checkedColor)
 	}
-
-	console.log(fiftyMove, irreversible)
 }
 
 buildBoard()
@@ -1299,6 +1314,7 @@ function newGame() {
 document.getElementById('undo').addEventListener('click', UndoButton)
 document.getElementById('ChessBoard').addEventListener('click', selectSquare)
 document.getElementById('newGameButton').addEventListener('click', newGame)
+document.getElementById('flip').addEventListener('click', flipBoard)
 document.getElementById('seeBoardButton').addEventListener('click', function() {
 	$('#undo').css('display', 'none')
 	$('#ShowResult').css('display', 'block')

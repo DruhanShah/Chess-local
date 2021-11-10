@@ -17,12 +17,12 @@ At the moment, the FEN input can only process the first two sections in a standa
 
 A standard chessboard display that can move pieces with clicks. Drag-and-drop implementation is a WIP.  
 For the rules, the movement patterns of the pieces, checks, absolute pins, castling, pawn promotion and _en passant_ have been added. Relative pins don't need to be implemented because they are still legal moves, you'll just lose a queen or so.   
-Added Checkmate, Stalemate, 50-move-rule and Threefold Repetition results. The game can finally end! Draw by Insufficient Material are WIPs.  
+Added Checkmate, Stalemate, 50-move-rule and Threefold Repetition results. The game can finally end! Draw by Insufficient Material is a WIP.
+Also, you can flip the board to see the game from Black's perspective now.  
 
 ## To-Do List
 
 - Draw by Insufficient Material
-- Flip board functionality
 - Sounds for piece moves
 - Multiple themes for appearance
 - Drag-and-Drop moves
