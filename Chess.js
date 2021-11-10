@@ -1317,7 +1317,7 @@ document.getElementById('newGameButton').addEventListener('click', newGame)
 document.getElementById('flip').addEventListener('click', flipBoard)
 document.getElementById('seeBoardButton').addEventListener('click', function() {
 	$('#undo').css('display', 'none')
-	$('#ShowResult').css('display', 'block')
+	$('#ShowResult').css('display', 'inline')
 	$('#ModalBox1').css('display', 'none')
 })
 document.getElementById('ShowResult').addEventListener('click', function() {
