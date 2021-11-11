@@ -136,13 +136,13 @@ button.lightMode {
     color:#ffffff;
     background-color: #4b4a4a;
     border: 2px solid #00ccff;
-    font-weight: 100;
+    font-weight: 300;
 }
 #White.lightMode, #Black.lightMode {
     color: #000000;
     background-color: #919191;
     border: 2px solid #161515;
-    font-weight: 200;
+    font-weight: 300;
 }
 #PlayerTextLong {
     font-size: 2.5vmin;
