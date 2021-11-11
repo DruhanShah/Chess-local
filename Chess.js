@@ -51,41 +51,11 @@ var irreversible = 0
 function colorSwitch() {
 	darkMode = !darkMode
 	if(darkMode) {
-		$('body').css('background-image', 'linear-gradient(#00282b, #0e0e0e 15%)').css('color', '#e7e4e4')
-		$('#topnavbar').css('color', '#c7c4c4')
-		$('#boardArea').css('border', '2px solid #00ccff')
-		$('#undo').css('border', '2px solid #00ccff')
-		$('#darkmodeButton').css('background-color', '#3f3f3f').css('color', '#ffe3c4').css('border', '2px solid #00ccff')
-		$('#HowToText').css('color', '#ffffff').css('border', '1px solid #e7e4e4').css('background-color', '#161515')
-		$('#PlayerTextLong').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '1px solid #e7e4e4').css('font-weight','100')
-		$('#White').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '2px solid #00ccff').css('font-weight','100')
-		$('#Black').css('color', '#ffffff').css('background-color', '#4b4a4a').css('border', '2px solid #00ccff').css('font-weight','100')
-		$('#ResultModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '2px solid #00ccff')
-		$('#seeBoardButton').css('background-color', '#161515').css('color', '#ffe3c4')
-		$('#QButton').css('background-color', '#3f3f3f')
-		$('#RButton').css('background-color', '#3f3f3f')
-		$('#BButton').css('background-color', '#3f3f3f')
-		$('#NButton').css('background-color', '#3f3f3f')
-		$('#PromoteModal').css('background-color', '#161515').css('color', '#c7c4c4').css('border', '1px solid #00ccff').css('font-weight', '300')
+		$('.lightMode').each(function() {$(this).removeClass('lightMode').addClass('darkMode')})
 		$('#darkmodeicon').attr('src', lightSign)
 	}
 	else {
-		$('body').css('background-image', 'linear-gradient(#a1a2b5, #c0c0c5 15%)').css('color', '#272424')
-		$('#topnavbar').css('color', '#272424')
-		$('#boardArea').css('border', '2px solid #161515')
-		$('#undo').css('border', '1px solid #161515')
-		$('#darkmodeButton').css('background-color', '#b8b8b8').css('color', '#3f3f3f').css('border', '1px solid #ffe3c4')
-		$('#HowToText').css('color', '#272424').css('border', '2px solid #272424').css('background-color', '#b8b8b8')
-		$('#PlayerTextLong').css('color', '#000000').css('background-color', '#919191').css('border', '2px solid #161515').css('font-weight','200')
-		$('#White').css('color', '#000000').css('background-color', '#919191').css('border', '2px solid #161515').css('font-weight','200')
-		$('#Black').css('color', '#000000').css('background-color', '#919191').css('border', '2px solid #161515').css('font-weight','200')
-		$('#ResultModal').css('background-color', '#919191').css('color', '#161515').css('border', '2px solid #161515')
-		$('#seeBoardButton').css('background-color', '#919191').css('color', '#161515')
-		$('#QButton').css('background-color', '#b8b8b8')
-		$('#RButton').css('background-color', '#b8b8b8')
-		$('#BButton').css('background-color', '#b8b8b8')
-		$('#NButton').css('background-color', '#b8b8b8')
-		$('#PromoteModal').css('background-color', '#919191').css('color', '#161515').css('border', '2px solid #161515').css('font-weight', '400')
+		$('.darkMode').each(function() {$(this).removeClass('darkMode').addClass('lightMode')})
 		$('#darkmodeicon').attr('src', darkSign)
 	}
 }
@@ -867,6 +837,18 @@ function flipBoard() {
 	for(var i=0; i<8; i++) {
 		$('td.rank'+String(i)).html(bottomColor==8 ? String(8-i) : String(1+i))
 		$('td.file'+String(i)).html(bottomColor==8 ? String.fromCharCode(65+i) : String.fromCharCode(72-i))
+	}
+
+	var blackPanel = $('#Hidden8').html()
+	var whitePanel = $('#Hidden0').html()
+
+	if(bottomColor==0) {
+		$('#Containertop').html(whitePanel)
+		$('#Containerbottom').html(blackPanel)
+	}
+	else {
+		$('#Containertop').html(blackPanel)
+		$('#Containerbottom').html(whitePanel)
 	}
 
 	bottomColor = bottomColor ^ 8
