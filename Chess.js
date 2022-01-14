@@ -1,13 +1,13 @@
-var darkMode = true
-var darkSign = 'img/dark.svg'
-var lightSign = 'img/light.svg'
-var blackCaptured = []
-var whiteCaptured = []
-var darkSquare = '#555555'
-var lightSquare = '#cccccc'
-var selectColor = '#00b3a4'
-var movedColor = '#7bc77e'
-var checkedColor = '#ff0000'
+let darkMode = true
+let darkSign = 'img/dark.svg'
+let lightSign = 'img/light.svg'
+let blackCaptured = []
+let whiteCaptured = []
+let darkSquare = '#555555'
+let lightSquare = '#cccccc'
+let selectColor = '#00b3a4'
+let movedColor = '#7bc77e'
+let checkedColor = '#ff0000'
 
 function checkSize() {
 	if($(window).height()/$(window).width()<0.9) {
@@ -26,7 +26,7 @@ $(checkSize())
 /* The dummy elements are so that all the black pieces will have i & 8 == 8
 And all the white pieces will have i & 8 == 0 
 The .svg extension is removed so that we can use the same list for the captured piece images*/
-var pieceImgList = [
+let pieceImgList = [
 	'img/blank',
 	'img/white_pawn',
 	'img/white_knight',
@@ -43,10 +43,10 @@ var pieceImgList = [
 	'img/black_queen',
 	'img/black_king'
 ]
-var boardContent = []
-var enPassant = null
-var fiftyMove = 0
-var irreversible = 0
+let boardContent = []
+let enPassant = null
+let fiftyMove = 0
+let irreversible = 0
 
 function colorSwitch() {
 	darkMode = !darkMode
@@ -61,7 +61,7 @@ function colorSwitch() {
 }
 document.getElementById('darkmode').addEventListener('click', colorSwitch)
 
-var k=true,q=true,K=true,Q=true
+let k=true,q=true,K=true,Q=true
 
 class Square {
 	constructor(number,piece) {
@@ -157,9 +157,9 @@ class Square {
 	}
 
 	checkRook() {
-		var checkingSquare = this.id
-		var checkingrank = this.rank
-		var checkingfile = this.file+1
+		let checkingSquare = this.id
+		let checkingrank = this.rank
+		let checkingfile = this.file+1
 		while(checkingrank<8) {
 			checkingSquare -= 8
 			checkingrank++
@@ -220,9 +220,9 @@ class Square {
 	}
 
 	checkBishop() {
-		var checkingSquare = this.id
-		var checkingrank = this.rank
-		var checkingfile = this.file+1
+		let checkingSquare = this.id
+		let checkingrank = this.rank
+		let checkingfile = this.file+1
 		while(checkingrank>1 && checkingfile<8) {
 			checkingSquare += 9
 			checkingrank--
@@ -292,26 +292,26 @@ class Square {
 		else if(this.id==56) {this.legalTarget = [48, 49, 57]}
 		else if(this.id==63) {this.legalTarget = [54, 55, 62]}
 		else if(this.rank==1) {
-			var temp = this.id
+			let temp = this.id
 			this.legalTarget = [temp-1, temp+1, temp-7, temp-8, temp-9]
 		}
 		else if(this.rank==8) {
-			var temp = this.id
+			let temp = this.id
 			this.legalTarget = [temp-1, temp+1, temp+7, temp+8, temp+9]
 		}
 		else if(this.file==0) {
-			var temp = this.id
+			let temp = this.id
 			this.legalTarget = [temp-8, temp-7, temp+1, temp+8, temp+9]
 		}
 		else if(this.file==7) {
-			var temp = this.id
+			let temp = this.id
 			this.legalTarget = [temp-9, temp-8, temp-1, temp+7, temp+8]
 		}
 		else {
-			var temp = this.id
+			let temp = this.id
 			this.legalTarget = [temp-9, temp-8, temp-7, temp-1, temp+1, temp+7, temp+8, temp+9]
 		}
-		for(var i=0; i<this.legalTarget.length; i++) {
+		for(let i=0; i<this.legalTarget.length; i++) {
 			if(boardContent[this.legalTarget[i]].color==this.color) {
 				this.legalTarget.splice(i,1)
 				i--
@@ -319,7 +319,7 @@ class Square {
 		}
 		if(this.color==0) {
 			if(K) {
-				var canCastle = true
+				let canCastle = true
 				if(boardContent[this.id+1].pieceId==0) {
 					boardContent[this.id].changePiece(0)
 					boardContent[this.id+1].changePiece(6)
@@ -344,7 +344,7 @@ class Square {
 					this.legalTarget.push(this.id+2)
 			}
 			if(Q) {
-				var canCastle = true
+				let canCastle = true
 				if(boardContent[this.id-1].pieceId==0) {
 					boardContent[this.id].changePiece(0)
 					boardContent[this.id-1].changePiece(6)
@@ -373,7 +373,7 @@ class Square {
 		}
 		else {
 			if(k) {
-				var canCastle = true
+				let canCastle = true
 				if(boardContent[this.id+1].pieceId==0) {
 					boardContent[this.id].changePiece(0)
 					boardContent[this.id+1].changePiece(14)
@@ -398,7 +398,7 @@ class Square {
 					this.legalTarget.push(this.id+2)
 			}
 			if(q) {
-				var canCastle = true
+				let canCastle = true
 				if(boardContent[this.id-1].pieceId==0) {
 					boardContent[this.id].changePiece(0)
 					boardContent[this.id-1].changePiece(14)
@@ -445,7 +445,7 @@ class Square {
 		if(this.rank>=2 && this.file>=2)
 			this.legalTarget.push(this.id+6)
 		
-		for(var i=0; i<this.legalTarget.length; i++) {
+		for(let i=0; i<this.legalTarget.length; i++) {
 			if(boardContent[this.legalTarget[i]].color==this.color) {
 				this.legalTarget.splice(i,1)
 				i--
@@ -476,8 +476,8 @@ class Square {
 			default:
 				break
 		}
-		var selfColor = this.color
-		for(var i=0; i<this.legalTarget.length; i++) {
+		let selfColor = this.color
+		for(let i=0; i<this.legalTarget.length; i++) {
 			if(this.pieceType===1 && this.legalTarget[i]===enPassant)
 				continue
 			moveList.push(new Ply(this, boardContent[this.legalTarget[i]]))
@@ -509,8 +509,8 @@ class Square {
 
 
 function checkCheck(color) {
-	var King
-	for(var i=0; i<64; i++) {
+	let King
+	for(let i=0; i<64; i++) {
 		if(boardContent[i].pieceId==6 && color==0) {
 			King = boardContent[i]  
 		}
@@ -520,9 +520,9 @@ function checkCheck(color) {
 	}
 	
 	//CheckRook
-	var checkingSquare = King.id
-	var checkingrank = King.rank
-	var checkingfile = King.file+1
+	let checkingSquare = King.id
+	let checkingrank = King.rank
+	let checkingfile = King.file+1
 	while(checkingrank<8) {
 		checkingSquare -= 8
 		checkingrank++
@@ -566,9 +566,9 @@ function checkCheck(color) {
 	}
 
 	//CheckBishop
-	var checkingSquare = King.id
-	var checkingrank = King.rank
-	var checkingfile = King.file+1
+	let checkingSquare = King.id
+	let checkingrank = King.rank
+	let checkingfile = King.file+1
 	while(checkingrank>1 && checkingfile<8) {
 		checkingSquare += 9
 		checkingrank--
@@ -616,7 +616,7 @@ function checkCheck(color) {
 	}
 
 	//CheckKnight
-	var AttackSquare = []
+	let AttackSquare = []
 	if(King.rank>=3 && King.file>=1)
 		AttackSquare.push(King.id+15)
 	if(King.rank>=3 && King.file<=6)
@@ -634,7 +634,7 @@ function checkCheck(color) {
 	if(King.rank>=2 && King.file>=2)
 		AttackSquare.push(King.id+6)
 	
-	for(var i=0; i<AttackSquare.length; i++) {
+	for(let i=0; i<AttackSquare.length; i++) {
 		if(boardContent[AttackSquare[i]].pieceId==(2|(King.color^8)))
 			return true
 	}
@@ -646,26 +646,26 @@ function checkCheck(color) {
 	else if(King.id==56) {AttackSquare = [48, 49, 57]}
 	else if(King.id==63) {AttackSquare = [54, 55, 62]}
 	else if(King.rank==1) {
-		var temp = King.id
+		let temp = King.id
 		AttackSquare = [temp-1, temp+1, temp-7, temp-8, temp-9]
 	}
 	else if(King.rank==8) {
-		var temp = King.id
+		let temp = King.id
 		AttackSquare = [temp-1, temp+1, temp+7, temp+8, temp+9]
 	}
 	else if(King.file==0) {
-		var temp = King.id
+		let temp = King.id
 		AttackSquare = [temp-8, temp-7, temp+1, temp+8, temp+9]
 	}
 	else if(King.file==7) {
-		var temp = King.id
+		let temp = King.id
 		AttackSquare = [temp-9, temp-8, temp-1, temp+7, temp+8]
 	}
 	else {
-		var temp = King.id
+		let temp = King.id
 		AttackSquare = [temp-9, temp-8, temp-7, temp-1, temp+1, temp+7, temp+8, temp+9]
 	}
-	for(var i=0; i<AttackSquare.length; i++) {
+	for(let i=0; i<AttackSquare.length; i++) {
 		if(boardContent[AttackSquare[i]].pieceId==(6|(King.color^8)))
 			return true
 	}
@@ -684,7 +684,7 @@ function checkCheck(color) {
 		if(King.file!=7)
 			AttackSquare.push(King.id+9)
 	}
-	for(var i=0; i<AttackSquare.length; i++) {
+	for(let i=0; i<AttackSquare.length; i++) {
 		if(boardContent[AttackSquare[i]].pieceId == (1|(King.color^8)))
 			return true
 	}
@@ -695,8 +695,8 @@ function checkCheck(color) {
 
 
 
-var plyNumber = 1
-var moveList = []
+let plyNumber = 1
+let moveList = []
 
 class Ply {
 	constructor(from, to) {
@@ -717,70 +717,70 @@ class Ply {
 	}
 
 	pushPosition() {
-		for(var i=0; i<64; i++) {
+		for(let i=0; i<64; i++) {
 			this.position.push(boardContent[i].pieceId)
 		}
 	}
 }
 
 
-for(var i=0; i<64; i++) {
+for(let i=0; i<64; i++) {
 	boardContent.push(new Square(i, 0))
 }
 
-var pickedUp = false
-var pickedUpSquare = null
-var moveColor = 0
+let pickedUp = false
+let pickedUpSquare = null
+let moveColor = 0
 
-var bottomColor = 0
+let bottomColor = 0
 function buildBoard() {
-	var board = $('#ChessBoard')
+	let board = $('#ChessBoard')
 
-	var blankrow = $('<tr>')
+	let blankrow = $('<tr>')
 
-	var blanksquare = $('<td>')
+	let blanksquare = $('<td>')
 	blanksquare.attr('colspan', '10').attr('id','blank').height('10%')
 	blankrow.append(blanksquare)
 
 	board.append(blankrow)
 
-	for(var rank = 0; rank<8; rank++) {
-		var row = $('<tr>')
+	for(let rank = 0; rank<8; rank++) {
+		let row = $('<tr>')
 		row.css('padding', '0')
 		
-		var blanksquare = $('<td>')
+		let blanksquare = $('<td>')
 		blanksquare.width('10%').height('10%').attr('id', 'blank')
 		row.append(blanksquare)
 
-		for(var file = 0; file<8; file++) {
-			var square = $('<td id='+String((8*rank)+file)+'></td>')
+		for(let file = 0; file<8; file++) {
+			let square = $('<td id='+String((8*rank)+file)+'></td>')
 			square.width('10%').height('10%').css('border-radius', '1vmin')
 
 			row.append(square)
 		}
 		
-		var blanksquare = $('<td id="blank" class="rank'+String(rank)+'">'+String(8-rank)+'</td>')
+		let blanksquare = $('<td id="blank" class="rank'+String(rank)+'">'+String(8-rank)+'</td>')
 		blanksquare.width('10%').height('10%')
 		row.append(blanksquare)
 
 		board.append(row)
 	}
 
-	var blankrow = $('<tr>')
+	let blankrow = $('<tr>')
 
-	var blanksquare = $('<td>')
+	let blanksquare = $('<td>')
 	blanksquare.width('10%').height('10%').attr('id','blank')
 	blankrow.append(blanksquare)
 
-	for(var file = 0; file<8; file++) {
-		var square = $('<td id="blank" class="file'+String(file)+'">'+String.fromCharCode(65+file)+'</td>')
+	for(let file = 0; file<8; file++) {
+		let square = $('<td id="blank" class="file'+String(file)+'">'+String.fromCharCode(65+file)+'</td>')
 		square.width('10%').height('10%')
 		blankrow.append(square)
 	}
-	var cornersquare = $('<td>')
+	let cornersquare = $('<td>')
 	cornersquare.width('10%').height('10%').attr('id', 'blank')
 	
-	var moveindicator = $("<div id='moveIndicator'>")
+	let moveindicator = $("<div id='moveIndicator'>")
 	moveindicator.css('border', '5px solid grey').css('background-color', moveColor==8 ? '#000000' : '#ffffff')
 	moveindicator.css('border-color', '#aaaaaa').css('border-radius', '7vmin').height('5vmin').width('5vmin')
 
@@ -801,11 +801,11 @@ function startingPosition() {
 	boardContent[5].changePiece(11)
 	boardContent[6].changePiece(10)
 	boardContent[7].changePiece(12)
-	for(var i=0; i<8; i++) {
+	for(let i=0; i<8; i++) {
 		boardContent[8+i].changePiece(9)
 		boardContent[48+i].changePiece(1)
 	}
-	for(var i=16; i<48; i++) {
+	for(let i=16; i<48; i++) {
 		boardContent[i].changePiece(0)
 	}
 	boardContent[56].changePiece(4)
@@ -829,18 +829,18 @@ function startingPosition() {
 
 function flipBoard() {
 	listOfTable = []
-	for(var i=0; i<64; i++)
+	for(let i=0; i<64; i++)
 		listOfTable.push($('#'+String(i)))
-	for(var i=0; i<64; i++)
+	for(let i=0; i<64; i++)
 		listOfTable[i].attr('id', 63-i)
 
-	for(var i=0; i<8; i++) {
+	for(let i=0; i<8; i++) {
 		$('td.rank'+String(i)).html(bottomColor==8 ? String(8-i) : String(1+i))
 		$('td.file'+String(i)).html(bottomColor==8 ? String.fromCharCode(65+i) : String.fromCharCode(72-i))
 	}
 
-	var blackPanel = $('#Hidden8').html()
-	var whitePanel = $('#Hidden0').html()
+	let blackPanel = $('#Hidden8').html()
+	let whitePanel = $('#Hidden0').html()
 
 	if(bottomColor==0) {
 		$('#Containertop').html(whitePanel)
@@ -856,21 +856,21 @@ function flipBoard() {
 }
 
 function presentBoard() {
-	for(var i=0; i<64; i++) {
-		var cell = $('#'+String(i))
+	for(let i=0; i<64; i++) {
+		let cell = $('#'+String(i))
 		cell.empty()
 		
-		var img = $('<img src='+pieceImgList[boardContent[i].pieceId]+'.svg></img>')
+		let img = $('<img src='+pieceImgList[boardContent[i].pieceId]+'.svg></img>')
 		img.width('100%').height('100%')
 		cell.append(img)
 	}
 	document.getElementById('moveIndicator').style.backgroundColor = moveColor==8 ? '#000000' : '#ffffff'
 	
-	for(var i=0; i<64; i++) {
+	for(let i=0; i<64; i++) {
 		$('#'+i).css('background-color', (boardContent[i].rank+boardContent[i].file)%2==1 ? darkSquare : lightSquare).css('border', '0px')
 	}
 
-	for(var i=0; i<64; i++) {
+	for(let i=0; i<64; i++) {
 		if(boardContent[i].pieceId!=0) {
 			boardContent[i].clearLegalTarget()
 			boardContent[i].checkPiece()
@@ -878,7 +878,7 @@ function presentBoard() {
 	}
 
 	if(moveList.length!=0) {
-		var lastMove = moveList[moveList.length-1]
+		let lastMove = moveList[moveList.length-1]
 		$('#'+String(lastMove.fromSquare)).css('background-color', movedColor)
 		$('#'+String(lastMove.toSquare)).css('background-color', movedColor)
 	}
@@ -886,16 +886,16 @@ function presentBoard() {
 	if(pickedUpSquare!==null) {
 		if(pickedUp) {
 			$('#'+String(pickedUpSquare)).css('background-color', selectColor)
-			for(var i=0; i<boardContent[pickedUpSquare].legalTarget.length; i++) {
-				var temp = boardContent[pickedUpSquare].legalTarget[i]
+			for(let i=0; i<boardContent[pickedUpSquare].legalTarget.length; i++) {
+				let temp = boardContent[pickedUpSquare].legalTarget[i]
 				$('#'+String(temp)).css('border', '3px solid '+selectColor)
 			}
 		}
 	}
 
 	if(whiteCaptured.length==0) {
-		var capPiece = $('<td>')
-		var capImg = $('<img src=img/blank.svg>')
+		let capPiece = $('<td>')
+		let capImg = $('<img src=img/blank.svg>')
 		capImg.height('1.5em')
 		capPiece.append(capImg)
 		$('tr#whiteCapturedList').empty().append(capPiece)
@@ -903,9 +903,9 @@ function presentBoard() {
 	else{
 		whiteCaptured.sort(function(a,b){return (b-a)})
 		$('tr#whiteCapturedList').empty()
-		for(var i=0; i<whiteCaptured.length; i++) {
-			var capPiece = $('<td>')
-			var capImg = $('<img src='+pieceImgList[whiteCaptured[i]]+'_cap.svg>')
+		for(let i=0; i<whiteCaptured.length; i++) {
+			let capPiece = $('<td>')
+			let capImg = $('<img src='+pieceImgList[whiteCaptured[i]]+'_cap.svg>')
 			capPiece.css('padding', '0px').css('margin', '0px')
 			capImg.height('1.5em').width('fit-content')
 			capPiece.append(capImg)
@@ -913,8 +913,8 @@ function presentBoard() {
 		}
 	}
 	if(blackCaptured.length==0) {
-		var capPiece = $('<td>')
-		var capImg = $('<img src=img/blank.svg>')
+		let capPiece = $('<td>')
+		let capImg = $('<img src=img/blank.svg>')
 		capImg.height('1.5em')
 		capPiece.append(capImg)
 		$('tr#blackCapturedList').empty().append(capPiece)
@@ -922,9 +922,9 @@ function presentBoard() {
 	else {
 		blackCaptured.sort(function(a,b){return (b-a)})
 		$('tr#blackCapturedList').empty()
-		for(var i=0; i<blackCaptured.length; i++) {
-			var capPiece = $('<td>')
-			var capImg = $('<img src='+pieceImgList[blackCaptured[i]]+'_cap.svg>')
+		for(let i=0; i<blackCaptured.length; i++) {
+			let capPiece = $('<td>')
+			let capImg = $('<img src='+pieceImgList[blackCaptured[i]]+'_cap.svg>')
 			capPiece.css('padding', '0px').css('margin', '0px')
 			capImg.height('1.5em').width('fit-content')
 			capPiece.append(capImg)
@@ -932,8 +932,8 @@ function presentBoard() {
 		}
 	}
 
-	var whiteKing, blackKing
-	for(var i=0; i<64; i++) {
+	let whiteKing, blackKing
+	for(let i=0; i<64; i++) {
 		if(boardContent[i].pieceId==6)
 			whiteKing = boardContent[i]
 		else if(boardContent[i].pieceId==14)
@@ -997,7 +997,7 @@ function move(from, to) {
 	else if(from.pieceId==9 && to.id===enPassant)
 		boardContent[to.id-8].changePiece(0)
 	
-	var newMove = new Ply(from, to)
+	let newMove = new Ply(from, to)
 	
 	if((K||Q) && from.pieceId==6) {
 		K = false
@@ -1054,8 +1054,8 @@ function move(from, to) {
 
 	presentBoard()
 
-	var noLegalMoves = true
-	for(var i=0; i<64; i++) {
+	let noLegalMoves = true
+	for(let i=0; i<64; i++) {
 		if(boardContent[i].color==moveColor && boardContent[i].legalTarget.length != 0)
 			noLegalMoves = false
 	}
@@ -1064,11 +1064,11 @@ function move(from, to) {
 	else if(noLegalMoves && !checkCheck(moveColor))
 		GameResult('Stalemate')
 	
-	var repetition = true
-	var repetitionCounter = 0
-	for(var i=Math.max(0, irreversible-1); i<moveList.length; i++) {
+	let repetition = true
+	let repetitionCounter = 0
+	for(let i=Math.max(0, irreversible-1); i<moveList.length; i++) {
 			repetition = true
-		for(var ii=0; ii<64; ii++) {
+		for(let ii=0; ii<64; ii++) {
 			if(newMove.position[ii]!=moveList[i].position[ii])
 				repetition = false;
 		}
@@ -1084,19 +1084,19 @@ function move(from, to) {
 
 function choosePromote(from, to) {
 	$('#ModalBox2').css('display', 'block')
-	var img1 = $('<img>')
+	let img1 = $('<img>')
 	img1.attr('src', 'img/'+(from.color==0 ? 'white' : 'black')+'_queen.svg')
 	img1.width('5vmin').height('5vmin')
 	$('#QButton').append(img1)
-	var img2 = $('<img>')
+	let img2 = $('<img>')
 	img2.attr('src', 'img/'+(from.color==0 ? 'white' : 'black')+'_rook.svg')
 	img2.width('5vmin').height('5vmin')
 	$('#RButton').append(img2)
-	var img3 = $('<img>')
+	let img3 = $('<img>')
 	img3.attr('src', 'img/'+(from.color==0 ? 'white' : 'black')+'_bishop.svg')
 	img3.width('5vmin').height('5vmin')
 	$('#BButton').append(img3)
-	var img4 = $('<img>')
+	let img4 = $('<img>')
 	img4.attr('src', 'img/'+(from.color==0 ? 'white' : 'black')+'_knight.svg')
 	img4.width('5vmin').height('5vmin')
 	$('#NButton').append(img4)
@@ -1115,7 +1115,7 @@ function promote(from, to, promoteTo) {
 		fiftyMove = 0
 	}
 	irreversible = plyNumber
-	var newMove = new Ply(from, to)
+	let newMove = new Ply(from, to)
 	enPassant = null
 
 	to.changePiece(promoteTo)
@@ -1132,8 +1132,8 @@ function promote(from, to, promoteTo) {
 
 	presentBoard()
 
-	var noLegalMoves = true
-	for(var i=0; i<64; i++) {
+	let noLegalMoves = true
+	for(let i=0; i<64; i++) {
 		if(boardContent[i].color==moveColor && boardContent[i].legalTarget.length != 0)
 			noLegalMoves = false
 	}
@@ -1151,9 +1151,9 @@ function promote(from, to, promoteTo) {
 
 function castle(from, to) {
 	irreversible = plyNumber
-	var newMove = new Ply(from, to)
+	let newMove = new Ply(from, to)
 	
-	var movedColor = from.color
+	let movedColor = from.color
 	if(to.id>from.id) {
 		boardContent[from.id].changePiece(0)
 		boardContent[from.id+1].changePiece(movedColor|4)
@@ -1183,8 +1183,8 @@ function castle(from, to) {
 	moveList.push(newMove)
 	presentBoard()
 
-	var noLegalMoves = true
-	for(var i=0; i<64; i++) {
+	let noLegalMoves = true
+	for(let i=0; i<64; i++) {
 		if(boardContent[i].color==moveColor && boardContent[i].legalTarget.length != 0)
 			noLegalMoves = false
 	}
@@ -1198,7 +1198,7 @@ function castle(from, to) {
 }
 
 function selectSquare(e) {
-	var selectedSquare
+	let selectedSquare
 	if(e.target.tagName=='IMG')
 		selectedSquare = e.target.parentElement
 	else if(e.target.tagName=='TD')
@@ -1207,7 +1207,7 @@ function selectSquare(e) {
 		return null;
 	if(selectedSquare.getAttribute('id')=='blank')
 		return null;
-	var squareId = Number(selectedSquare.getAttribute('id'))
+	let squareId = Number(selectedSquare.getAttribute('id'))
 	if(!pickedUp) {
 		if(boardContent[squareId].pieceId==0)
 			return null;
@@ -1218,8 +1218,8 @@ function selectSquare(e) {
 		}
 	}
 	else {
-		var from = boardContent[pickedUpSquare]
-		var to = boardContent[squareId]
+		let from = boardContent[pickedUpSquare]
+		let to = boardContent[squareId]
 		if(!from.legalTarget.includes(to.id)) {
 			pickedUp = false
 			pickedUpSquare = null
@@ -1238,10 +1238,10 @@ function selectSquare(e) {
 function Undo() {
 	if(moveList.length==0)
 		return null
-	var lastMove = moveList[moveList.length-1]
+	let lastMove = moveList[moveList.length-1]
 	
 	if(lastMove.toColor===0) {
-		for(var i=0; i<blackCaptured.length; i++) {
+		for(let i=0; i<blackCaptured.length; i++) {
 			if(blackCaptured[i]==lastMove.toPiece) {
 				blackCaptured.splice(i,1)
 				break
@@ -1249,7 +1249,7 @@ function Undo() {
 		}
 	}
 	else if(lastMove.toColor===8) {
-		for(var i=0; i<whiteCaptured.length; i++) {
+		for(let i=0; i<whiteCaptured.length; i++) {
 			if(whiteCaptured[i]==lastMove.toPiece) {
 				whiteCaptured.splice(i,1)
 				break
