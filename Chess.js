@@ -1316,13 +1316,9 @@ document.getElementById('seeBoardButton').addEventListener('click', function() {
 	$('#ModalBox1').css('display', 'none')
 })
 document.getElementById('ShowResult').addEventListener('click', function() {
-	$('#undo').css('display', 'block')
+	$('#undo').css('display', 'inline')
 	$('#ShowResult').css('display', 'none')
 	$('#ModalBox1').css('display', 'block')
 })
-/*document.getElementById('Checkmate').addEventListener('click', function() {
-	GameResult('Checkmate')
-})
-document.getElementById('Stalemate').addEventListener('click', function() {
-	GameResult('Stalemate')
-})*/
+// document.getElementById('Checkmate').addEventListener('click', GameResult('Checkmate'))
+// document.getElementById('Stalemate').addEventListener('click', GameResult('Stalemate'))
